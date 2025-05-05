@@ -1,0 +1,13 @@
+<svg width="200" height="300" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="300" fill="#0f172a"/>
+  <circle cx="100" cy="100" r="40" fill="none" stroke="white" stroke-width="2"/>
+  <circle cx="100" cy="100" r="30" fill="none" stroke="white" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="20" fill="none" stroke="white" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="10" fill="white"/>
+  <path d="M100 60V140" stroke="white" stroke-width="1.5"/>
+  <path d="M60 100H140" stroke="white" stroke-width="1.5"/>
+  <path d="M70 70L130 130" stroke="white" stroke-width="1.5"/>
+  <path d="M70 130L130 70" stroke="white" stroke-width="1.5"/>
+  <text x="100" y="200" text-anchor="middle" fill="white" font-family="serif" font-size="16">WHEEL OF FORTUNE</text>
+  <text x="100" y="230" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Cycles • Destiny • Change</text>
+</svg>

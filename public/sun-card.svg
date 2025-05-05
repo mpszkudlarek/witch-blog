@@ -1,0 +1,14 @@
+<svg width="200" height="300" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="300" fill="#0f172a"/>
+  <circle cx="100" cy="100" r="30" fill="none" stroke="white" stroke-width="2"/>
+  <path d="M100 60V70" stroke="white" stroke-width="2"/>
+  <path d="M100 130V140" stroke="white" stroke-width="2"/>
+  <path d="M60 100H70" stroke="white" stroke-width="2"/>
+  <path d="M130 100H140" stroke="white" stroke-width="2"/>
+  <path d="M75 75L85 85" stroke="white" stroke-width="2"/>
+  <path d="M115 85L125 75" stroke="white" stroke-width="2"/>
+  <path d="M75 125L85 115" stroke="white" stroke-width="2"/>
+  <path d="M115 115L125 125" stroke="white" stroke-width="2"/>
+  <text x="100" y="200" text-anchor="middle" fill="white" font-family="serif" font-size="16">THE SUN</text>
+  <text x="100" y="230" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Vitality • Joy • Success</text>
+</svg>

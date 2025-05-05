@@ -1,0 +1,12 @@
+<svg width="200" height="300" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="300" fill="#0f172a"/>
+  <path d="M90 140L90 70L110 70L110 140" stroke="white" stroke-width="2" fill="none"/>
+  <path d="M85 70L115 70" stroke="white" stroke-width="2"/>
+  <path d="M80 140L120 140" stroke="white" stroke-width="2"/>
+  <path d="M70 60L130 120" stroke="white" stroke-width="1.5"/>
+  <path d="M130 60L70 120" stroke="white" stroke-width="1.5"/>
+  <circle cx="100" cy="90" r="5" fill="white"/>
+  <circle cx="100" cy="110" r="5" fill="white"/>
+  <text x="100" y="200" text-anchor="middle" fill="white" font-family="serif" font-size="16">THE TOWER</text>
+  <text x="100" y="230" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Disaster • Upheaval • Revelation</text>
+</svg>
