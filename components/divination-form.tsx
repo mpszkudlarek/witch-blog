@@ -166,9 +166,8 @@ export default function DivinationForm() {
     { value: "other", label: "Other - Mystical Essence" },
   ]
 
-  // Calculate cost based on number of divinations
-  const baseCost = 15
-  const totalCost = baseCost * 1 //formData.divinationCount; Removed divinationCount
+  // Calculate cost based on number of divination's
+  const totalCost = 15 //formData.divinationCount; Removed divinationCount
   const discount = 0 //formData.divinationCount >= 3 ? 10 : 0; Removed divinationCount
 
   // Apply discount if applicable
@@ -272,7 +271,7 @@ export default function DivinationForm() {
               <option value="separated">Separated</option>
               <option value="divorced">Divorced</option>
               <option value="widowed">Widowed</option>
-              <option value="complicated">It's complicated</option>
+              <option value="complicated">It&#39;s complicated</option>
             </select>
             {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
           </div>

@@ -16,7 +16,7 @@ export default function Home() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Moon className="h-6 w-6 mr-2 opacity-80" />
-            <h1 className="text-3xl font-serif">The Witch's Divination</h1>
+            <h1 className="text-3xl font-serif">The Witch&#39;s Divination</h1>
             <Star className="h-6 w-6 ml-2 opacity-80" />
           </div>
           <div className="w-16 h-1 bg-white/30 mx-auto mb-4"></div>

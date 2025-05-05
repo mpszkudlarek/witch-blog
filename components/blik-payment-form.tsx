@@ -37,9 +37,8 @@ export default function BlikPaymentForm() {
     }
   }, [])
 
-  // Calculate cost based on number of divinations
-  const baseCost = 15
-  const finalCost = baseCost
+  // Calculate cost based on number of divination's
+  const finalCost = 15
 
   /**
    * Handle BLIK payment form submission

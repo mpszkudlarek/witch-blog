@@ -285,7 +285,6 @@ export const DivinationService = {
     const reversedCount = selectedCards.filter((card) => card.reversed).length
 
     // Adjust the reading tone based on the number of reversed cards
-    let readingTone = ""
     if (reversedCount === 0) {
       readingTone = "Your reading reveals a path of clarity and positive energy."
     } else if (reversedCount === 1) {
