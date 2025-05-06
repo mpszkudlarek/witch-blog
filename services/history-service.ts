@@ -1,3 +1,10 @@
+/**
+ * History Service
+ *
+ * This service manages the user's divination history in local storage
+ * and synchronizes with the backend when available.
+ */
+
 import type { DivinationHistoryItem, DivinationResult, DivinationFormData } from "@/types"
 import { ApiClient } from "./api-client"
 import { ApiConfig } from "@/config/api-config"
@@ -119,18 +126,12 @@ export const HistoryService = {
         try {
           await HistoryService.syncWithBackend(item)
         } catch (error) {
-          // If still failing, store for later retry
+          console.error("Failed to sync individual item, will retry later:", error)
           HistoryService.storeFailedSync(item)
         }
       }
-    } catch (error) {
-      console.error("Error retrying failed syncs:", error)
-    }
-  },
-
-  /**
-   * Get the user  {
-      console.error("Error retrying failed syncs:", error)
+    } catch (err) {
+      console.error("Error retrying failed syncs:", err)
     }
   },
 
@@ -191,8 +192,8 @@ export const HistoryService = {
    * @returns Merged history items
    */
   mergeHistory: (
-    localHistory: DivinationHistoryItem[],
-    backendHistory: DivinationHistoryItem[],
+      localHistory: DivinationHistoryItem[],
+      backendHistory: DivinationHistoryItem[],
   ): DivinationHistoryItem[] => {
     // Create a map of existing IDs
     const idMap = new Map<string, boolean>()

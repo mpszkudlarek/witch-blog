@@ -51,6 +51,7 @@ export const PaymentService = {
           }
 
           // Register for payment updates
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const updateHandler = (message: any) => {
             console.log("Payment update:", message.payload)
             // You could dispatch events or update UI based on these updates

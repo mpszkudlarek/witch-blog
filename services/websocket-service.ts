@@ -1,3 +1,10 @@
+/**
+ * WebSocket Service
+ *
+ * This service handles WebSocket communication with the Spring backend.
+ * It provides methods for connecting, sending messages, and handling responses.
+ */
+
 import { ApiConfig } from "@/config/api-config"
 import { WebSocketMessageType, ConnectionStatus } from "@/types/websocket"
 import type {
@@ -20,7 +27,14 @@ class WebSocketService {
   private heartbeatInterval: NodeJS.Timeout | null = null
   private clientId = ""
   private lastMessageId = ""
-  private pendingMessages: Map<string, { resolve: Function; reject: Function; timeout: NodeJS.Timeout }> = new Map()
+  private pendingMessages: Map<
+      string,
+      {
+        resolve: (value: WebSocketMessage) => void
+        reject: (reason: Error) => void
+        timeout: NodeJS.Timeout
+      }
+  > = new Map()
 
   /**
    * Initialize the WebSocket connection
@@ -29,8 +43,8 @@ class WebSocketService {
    */
   public async connect(url?: string): Promise<boolean> {
     if (
-      this.connectionStatus === ConnectionStatus.CONNECTED ||
-      this.connectionStatus === ConnectionStatus.AUTHENTICATED
+        this.connectionStatus === ConnectionStatus.CONNECTED ||
+        this.connectionStatus === ConnectionStatus.AUTHENTICATED
     ) {
       console.log("[WebSocketService] Already connected")
       return true
@@ -192,17 +206,18 @@ class WebSocketService {
    * @returns Promise that resolves with the response message
    */
   public async sendMessage<T, R>(
-    type: WebSocketMessageType,
-    payload: T,
-    timeoutMs = 30000,
+      type: WebSocketMessageType,
+      payload: T,
+      timeoutMs = 30000,
   ): Promise<WebSocketMessage<R>> {
     if (
-      !this.socket ||
-      (this.connectionStatus !== ConnectionStatus.CONNECTED && this.connectionStatus !== ConnectionStatus.AUTHENTICATED)
+        !this.socket ||
+        (this.connectionStatus !== ConnectionStatus.CONNECTED && this.connectionStatus !== ConnectionStatus.AUTHENTICATED)
     ) {
       try {
         await this.connect()
       } catch (error) {
+        console.error("WebSocket connection error:", error)
         throw new Error("Failed to connect to WebSocket server")
       }
     }
@@ -244,7 +259,7 @@ class WebSocketService {
    * @param paymentData - The payment data to send
    * @returns Promise that resolves with the payment result
    */
-  public async sendPaymentRequest(paymentData: PaymentRequestPayload): Promise<any> {
+  public async sendPaymentRequest(paymentData: PaymentRequestPayload): Promise<unknown> {
     try {
       const response = await this.sendMessage(WebSocketMessageType.PAYMENT_REQUEST, paymentData)
 
@@ -260,7 +275,7 @@ class WebSocketService {
    * @param divinationData - The divination data to send
    * @returns Promise that resolves with the divination result
    */
-  public async sendDivinationRequest(divinationData: DivinationRequestPayload): Promise<any> {
+  public async sendDivinationRequest(divinationData: DivinationRequestPayload): Promise<unknown> {
     try {
       const response = await this.sendMessage(WebSocketMessageType.DIVINATION_REQUEST, divinationData)
 
@@ -340,7 +355,7 @@ class WebSocketService {
    * @param event - The close event
    * @param reject - Promise reject function
    */
-  private handleClose(event: CloseEvent, reject: (reason: any) => void): void {
+  private handleClose(event: CloseEvent, reject: (reason: Error) => void): void {
     console.log(`[WebSocketService] WebSocket closed: ${event.code} ${event.reason}`)
 
     // Clear heartbeat interval
@@ -369,7 +384,7 @@ class WebSocketService {
    * @param event - The error event
    * @param reject - Promise reject function
    */
-  private handleError(event: Event, reject: (reason: any) => void): void {
+  private handleError(event: Event, reject: (reason: Error) => void): void {
     console.error("[WebSocketService] WebSocket error:", event)
     this.connectionStatus = ConnectionStatus.ERROR
     this.notifyStatusChange()
@@ -382,7 +397,7 @@ class WebSocketService {
    * Attempt to reconnect to the WebSocket server
    * @param reject - Promise reject function
    */
-  private attemptReconnect(reject: (reason: any) => void): void {
+  private attemptReconnect(reject: (reason: Error) => void): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error("[WebSocketService] Max reconnect attempts reached")
       this.connectionStatus = ConnectionStatus.ERROR
@@ -393,7 +408,7 @@ class WebSocketService {
 
     this.reconnectAttempts++
     console.log(
-      `[WebSocketService] Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
+        `[WebSocketService] Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
     )
 
     setTimeout(() => {
@@ -415,9 +430,9 @@ class WebSocketService {
     // Start new heartbeat interval
     this.heartbeatInterval = setInterval(() => {
       if (
-        this.socket &&
-        (this.connectionStatus === ConnectionStatus.CONNECTED ||
-          this.connectionStatus === ConnectionStatus.AUTHENTICATED)
+          this.socket &&
+          (this.connectionStatus === ConnectionStatus.CONNECTED ||
+              this.connectionStatus === ConnectionStatus.AUTHENTICATED)
       ) {
         const heartbeatMessage: WebSocketMessage<HeartbeatPayload> = {
           type: WebSocketMessageType.HEARTBEAT,

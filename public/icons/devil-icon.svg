@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+            d="M12 2 L14.85 8.5 L22 9 L16 13.5 L18 21 L12 17.5 L6 21 L8 13.5 L2 9 L9.15 8.5 Z
+       M12 2 L16 13.5
+       M12 2 L8 13.5
+       M2 9 L22 9
+       M6 21 L16 13.5
+       M18 21 L8 13.5"            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+    />
+</svg>

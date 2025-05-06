@@ -50,7 +50,7 @@ export const ApiClient = {
    * @param options - Additional fetch options
    * @returns Promise with the response data
    */
-  async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<ApiResponse<T>> {
     const url = `${ApiConfig.api.baseUrl}/${ApiConfig.api.version}${endpoint}`
 
     // Merge default options with provided options
@@ -71,7 +71,7 @@ export const ApiClient = {
    * @param options - Additional fetch options
    * @returns Promise with the response data
    */
-  async put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<ApiResponse<T>> {
     const url = `${ApiConfig.api.baseUrl}/${ApiConfig.api.version}${endpoint}`
 
     // Merge default options with provided options

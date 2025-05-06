@@ -7,7 +7,6 @@ import { Wand2 } from "lucide-react"
 import { submitDivinationForm } from "@/actions/divination-actions"
 import CustomDatePicker from "./custom-date-picker"
 
-// Update the DivinationFormState interface to include validation errors
 interface DivinationFormState {
   name: string
   dateOfBirth: string
@@ -166,146 +165,142 @@ export default function DivinationForm() {
     { value: "other", label: "Other - Mystical Essence" },
   ]
 
-  // Calculate cost based on number of divination's
-  const totalCost = 15 //formData.divinationCount; Removed divinationCount
-  const discount = 0 //formData.divinationCount >= 3 ? 10 : 0; Removed divinationCount
-
-  // Apply discount if applicable
-  const finalCost = totalCost //discount > 0 ? totalCost - totalCost * (discount / 100) : totalCost; Removed discount
+  // Fixed cost for divination
+  const cost = 15
 
   return (
-    <div className="witch-card border border-white/10" style={{ transform: "none", transition: "none" }}>
-      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-        <div className="space-y-4">
-          {/* Name Field */}
-          <div>
-            <label htmlFor="name" className="witch-label">
-              Your Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`witch-input ${errors.name ? "border-red-400" : ""}`}
-              placeholder="Enter your name"
-            />
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-          </div>
+      <div className="witch-card border border-white/10" style={{ transform: "none", transition: "none" }}>
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          <div className="space-y-4">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="witch-label">
+                Your Name
+              </label>
+              <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`witch-input ${errors.name ? "border-red-400" : ""}`}
+                  placeholder="Enter your name"
+              />
+              {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+            </div>
 
-          {/* Date of Birth Field */}
-          <div>
-            <label htmlFor="dateOfBirth" className="witch-label">
-              Date of Birth
-            </label>
-            <CustomDatePicker
-              id="dateOfBirth"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleDateChange}
-              placeholder="Select your date of birth"
-              hasError={!!errors.dateOfBirth}
-            />
-            {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
-          </div>
+            {/* Date of Birth Field */}
+            <div>
+              <label htmlFor="dateOfBirth" className="witch-label">
+                Date of Birth
+              </label>
+              <CustomDatePicker
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleDateChange}
+                  placeholder="Select your date of birth"
+                  hasError={!!errors.dateOfBirth}
+              />
+              {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
+            </div>
 
-          {/* Favorite Color Field */}
-          <div>
-            <label htmlFor="favoriteColor" className="witch-label">
-              Favorite Color
-            </label>
-            <select
-              id="favoriteColor"
-              name="favoriteColor"
-              value={formData.favoriteColor}
-              onChange={handleChange}
-              className={`witch-input bg-transparent ${errors.favoriteColor ? "border-red-400" : ""}`}
-            >
-              {colorOptions.map((option) => (
-                <option key={option.value} value={option.value} disabled={option.value === ""}>
-                  {option.label}
+            {/* Favorite Color Field */}
+            <div>
+              <label htmlFor="favoriteColor" className="witch-label">
+                Favorite Color
+              </label>
+              <select
+                  id="favoriteColor"
+                  name="favoriteColor"
+                  value={formData.favoriteColor}
+                  onChange={handleChange}
+                  className={`witch-input bg-transparent ${errors.favoriteColor ? "border-red-400" : ""}`}
+              >
+                {colorOptions.map((option) => (
+                    <option key={option.value} value={option.value} disabled={option.value === ""}>
+                      {option.label}
+                    </option>
+                ))}
+              </select>
+              {errors.favoriteColor && <p className="text-red-400 text-xs mt-1">{errors.favoriteColor}</p>}
+            </div>
+
+            {/* Favorite Number Field */}
+            <div>
+              <label htmlFor="favoriteNumber" className="witch-label">
+                Favorite Number
+              </label>
+              <input
+                  type="number"
+                  id="favoriteNumber"
+                  name="favoriteNumber"
+                  value={formData.favoriteNumber}
+                  onChange={handleChange}
+                  className={`witch-input ${errors.favoriteNumber ? "border-red-400" : ""}`}
+                  placeholder="Enter your favorite number"
+                  min="0"
+                  step="1"
+              />
+              {errors.favoriteNumber && <p className="text-red-400 text-xs mt-1">{errors.favoriteNumber}</p>}
+            </div>
+
+            {/* Relationship Status Field */}
+            <div>
+              <label htmlFor="relationshipStatus" className="witch-label">
+                Relationship Status
+              </label>
+              <select
+                  id="relationshipStatus"
+                  name="relationshipStatus"
+                  value={formData.relationshipStatus}
+                  onChange={handleChange}
+                  className={`witch-input bg-transparent ${errors.relationshipStatus ? "border-red-400" : ""}`}
+              >
+                <option value="" disabled>
+                  Select your relationship status
                 </option>
-              ))}
-            </select>
-            {errors.favoriteColor && <p className="text-red-400 text-xs mt-1">{errors.favoriteColor}</p>}
+                <option value="single">Single</option>
+                <option value="in_relationship">In a relationship</option>
+                <option value="married">Married</option>
+                <option value="separated">Separated</option>
+                <option value="divorced">Divorced</option>
+                <option value="widowed">Widowed</option>
+                <option value="complicated">It&apos;s complicated</option>
+              </select>
+              {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
+            </div>
           </div>
 
-          {/* Favorite Number Field */}
-          <div>
-            <label htmlFor="favoriteNumber" className="witch-label">
-              Favorite Number
-            </label>
-            <input
-              type="number"
-              id="favoriteNumber"
-              name="favoriteNumber"
-              value={formData.favoriteNumber}
-              onChange={handleChange}
-              className={`witch-input ${errors.favoriteNumber ? "border-red-400" : ""}`}
-              placeholder="Enter your favorite number"
-              min="0"
-              step="1"
-            />
-            {errors.favoriteNumber && <p className="text-red-400 text-xs mt-1">{errors.favoriteNumber}</p>}
+          {/* Pricing information */}
+          <div className="border-t border-white/10 pt-4 mt-4">
+            <div className="flex justify-between items-center mb-4 text-lg font-medium">
+              <span>Total:</span>
+              <span>${cost.toFixed(2)}</span>
+            </div>
           </div>
 
-          {/* Relationship Status Field */}
-          <div>
-            <label htmlFor="relationshipStatus" className="witch-label">
-              Relationship Status
-            </label>
-            <select
-              id="relationshipStatus"
-              name="relationshipStatus"
-              value={formData.relationshipStatus}
-              onChange={handleChange}
-              className={`witch-input bg-transparent ${errors.relationshipStatus ? "border-red-400" : ""}`}
+          {/* Submit Button */}
+          <div className="pt-4">
+            <button
+                type="submit"
+                className="mystical-button w-full flex items-center justify-center"
+                disabled={isSubmitting}
             >
-              <option value="" disabled>
-                Select your relationship status
-              </option>
-              <option value="single">Single</option>
-              <option value="in_relationship">In a relationship</option>
-              <option value="married">Married</option>
-              <option value="separated">Separated</option>
-              <option value="divorced">Divorced</option>
-              <option value="widowed">Widowed</option>
-              <option value="complicated">It&#39;s complicated</option>
-            </select>
-            {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
-          </div>
-        </div>
-
-        {/* Update the pricing information section to show a fixed price */}
-        <div className="border-t border-white/10 pt-4 mt-4">
-          <div className="flex justify-between items-center mb-4 text-lg font-medium">
-            <span>Total:</span>
-            <span>$15.00</span>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="mystical-button w-full flex items-center justify-center"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center">
+              {isSubmitting ? (
+                  <span className="flex items-center">
                 <span className="animate-pulse mr-2">✧</span>
                 Preparing...
               </span>
-            ) : (
-              <span className="flex items-center">
+              ) : (
+                  <span className="flex items-center">
                 <Wand2 className="h-4 w-4 mr-2" />
                 Begin Divination
               </span>
-            )}
-          </button>
-        </div>
-      </form>
-    </div>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
   )
 }

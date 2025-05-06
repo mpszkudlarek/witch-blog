@@ -1,8 +1,0 @@
-<svg width="200" height="300" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="300" fill="#0f172a"/>
-  <path d="M100 80L113.4 107.3L143.4 112.4L121.7 133.5L127.6 163.4L100 149.3L72.4 163.4L78.3 133.5L56.6 112.4L86.6 107.3L100 80Z" fill="none" stroke="white" stroke-width="2"/>
-  <circle cx="100" cy="120" r="50" fill="none" stroke="white" stroke-opacity="0.3" stroke-width="1"/>
-  <path d="M100 90L108.7 107.3L127.6 110.3L113.8 123.7L117.4 142.4L100 133.5L82.6 142.4L86.2 123.7L72.4 110.3L91.3 107.3L100 90Z" fill="white"/>
-  <text x="100" y="200" text-anchor="middle" fill="white" font-family="serif" font-size="16">THE STAR</text>
-  <text x="100" y="230" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">Hope • Inspiration • Renewal</text>
-</svg>

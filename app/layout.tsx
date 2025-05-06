@@ -21,18 +21,18 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfair.variable} font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          <BackgroundStars />
-          {children}
-        </ThemeProvider>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+        <BackgroundStars />
+        {children}
+      </ThemeProvider>
       </body>
-    </html>
+      </html>
   )
 }

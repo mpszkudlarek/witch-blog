@@ -2,134 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Remove all the custom scaling variables and media queries */
-@layer base {
-  :root {
-    /* Remove custom scaling variables */
-    --content-scale: 1;
-    --max-width-scale: 1;
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-
     --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%;
-
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
-
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
-
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 215 32% 3%;
     --foreground: 0 0% 98%;
-
     --card: 215 32% 3%;
     --card-foreground: 0 0% 98%;
-
     --popover: 215 32% 3%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 9%;
-
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-
     --accent: 0 0% 14.9%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Minimalistic background with subtle gradient */
-body {
-  @apply bg-slate-950;
-  background-image: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.06) 0%, transparent 45%),
+    @apply bg-background text-foreground bg-slate-950;
+    background-image: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.06) 0%, transparent 45%),
     radial-gradient(circle at 85% 85%, rgba(219, 39, 119, 0.06) 0%, transparent 45%);
-}
-
-/* Simplified stars */
-.stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.star {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  background-color: white;
-  border-radius: 50%;
-  opacity: 0.4;
-}
-
-.star.twinkle {
-  animation: quickTwinkle 3s infinite;
-}
-
-@keyframes quickTwinkle {
-
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-
-  50% {
-    opacity: 0.8;
   }
 }
 
-/* Subtle geometric accent */
+/* Geometric accent */
 .geometric-accent {
   position: fixed;
   bottom: 0;
@@ -143,11 +73,11 @@ body {
   background-size: 30px 30px;
 }
 
+/* Form elements */
 .witch-input {
   @apply bg-transparent border-b border-white/50 focus:border-white outline-none px-2 py-1 w-full transition-all;
 }
 
-/* Add this to ensure all select elements have consistent styling */
 select.witch-input {
   @apply bg-transparent border-b border-white/50 focus:border-white outline-none px-2 py-1 w-full transition-all appearance-none text-white;
   background-color: transparent !important;
@@ -158,37 +88,11 @@ select.witch-input option {
   @apply bg-slate-950 text-white;
 }
 
-.witch-input option {
-  @apply bg-slate-950 text-white;
-}
-
 .witch-label {
   @apply text-sm opacity-70 mb-1 block;
 }
 
-/* Original button style - kept for reference */
-.witch-button {
-  @apply bg-white text-slate-950 hover:bg-white/90 transition-all font-medium py-2 px-4 rounded-none;
-  position: relative;
-  overflow: hidden;
-}
-
-.witch-button::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: 0.5s;
-}
-
-.witch-button:hover::after {
-  left: 100%;
-}
-
-/* Replace the colorful mystical button style with a black and white version */
+/* Buttons */
 .mystical-button {
   @apply font-medium py-2.5 px-4 rounded-md transition-all;
   position: relative;
@@ -202,6 +106,7 @@ select.witch-input option {
   background: linear-gradient(to right, rgba(15, 23, 42, 1), rgba(30, 41, 59, 1));
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .mystical-button:active {
@@ -225,18 +130,8 @@ select.witch-input option {
   border-radius: 2px;
 }
 
-@keyframes mysticalGlow {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+.mystical-button:hover::before {
+  opacity: 1;
 }
 
 .mystical-button:disabled {
@@ -244,27 +139,15 @@ select.witch-input option {
   cursor: not-allowed;
 }
 
-.mystical-button:hover::before {
-  opacity: 1;
-}
-
-/* Add a subtle glow effect to the mystical button */
-.mystical-button:hover {
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-
-/* Modify the witch-card class to remove the hover animation by default */
+/* Cards */
 .witch-card {
   @apply border border-white/20 p-6 rounded-sm bg-slate-950/90 backdrop-blur-sm;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
-  /* Remove scaling */
   transform: none;
-  transform-origin: center top;
   margin-bottom: 1rem;
 }
 
-/* Create a new class for interactive cards that should have hover effects */
 .witch-card-interactive {
   transition: all 0.3s ease;
 }
@@ -275,6 +158,123 @@ select.witch-input option {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+/* Animations */
+@keyframes mysticalGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes moonPhases {
+  0% {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  25% {
+    background: radial-gradient(circle at 60% 30%, #ffffff, #0f172a);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    background: radial-gradient(circle at 70% 30%, #ffffff, #0f172a);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+  }
+  75% {
+    background: radial-gradient(circle at 40% 30%, #ffffff, #0f172a);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes blikScan {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    transform: scaleY(1) rotate(-1deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scaleY(1.05) rotate(1deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scaleY(1.1) rotate(-0.5deg);
+    opacity: 1;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes errorPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loaders and animations */
 .moon-loader {
   width: 100px;
   height: 100px;
@@ -284,73 +284,41 @@ select.witch-input option {
   will-change: transform, background, box-shadow;
 }
 
-@keyframes moonPhases {
-  0% {
-    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-
-  25% {
-    background: radial-gradient(circle at 60% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  }
-
-  50% {
-    background: radial-gradient(circle at 70% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
-  }
-
-  75% {
-    background: radial-gradient(circle at 40% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  }
-
-  100% {
-    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-}
-
-.candle-flame {
+.blik-animation {
   position: relative;
-  width: 10px;
-  height: 30px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
-  border-radius: 50% 50% 20% 20%;
-  margin: 0 auto;
-  animation: flicker 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-  will-change: transform, opacity;
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
-@keyframes flicker {
-  0% {
-    transform: scaleY(1) rotate(-1deg);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scaleY(1.05) rotate(1deg);
-    opacity: 0.9;
-  }
-
-  100% {
-    transform: scaleY(1.1) rotate(-0.5deg);
-    opacity: 1;
-  }
+.blik-animation::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: blikScan 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-/* Add enhanced tarot card styling */
-.tarot-spread {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  justify-items: center;
-  align-items: stretch;
-  padding: 1rem 0;
+.payment-error-icon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: errorPulse 2s infinite;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
 }
 
-/* Update the tarot card styling to have more rounded corners */
+/* Tarot card styles */
 .tarot-card-container {
   width: 100%;
   max-width: 220px;
@@ -372,7 +340,6 @@ select.witch-input option {
   transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform-style: preserve-3d;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border-radius: 16px;
 }
 
@@ -390,7 +357,6 @@ select.witch-input option {
   overflow: hidden;
 }
 
-/* Enhanced card back design */
 .tarot-card-back {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   display: flex;
@@ -398,7 +364,16 @@ select.witch-input option {
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
+}
+
+.tarot-card-front {
+  background: linear-gradient(to bottom, #1a202c 0%, #0f172a 100%);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 .tarot-card-back-design {
@@ -437,11 +412,13 @@ select.witch-input option {
   right: 0;
   bottom: 0;
   opacity: 0.3;
-  background-image: repeating-linear-gradient(45deg,
-      transparent,
-      transparent 10px,
-      rgba(255, 255, 255, 0.05) 10px,
-      rgba(255, 255, 255, 0.05) 20px), radial-gradient(circle at center, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+  background-image: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 255, 255, 0.05) 10px,
+          rgba(255, 255, 255, 0.05) 20px
+  ), radial-gradient(circle at center, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
 }
 
 .tarot-card-back-circle {
@@ -505,34 +482,6 @@ select.witch-input option {
   animation-delay: 1.5s;
 }
 
-@keyframes twinkle {
-
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
 .tarot-card-back-text {
   position: absolute;
   bottom: 1rem;
@@ -545,16 +494,6 @@ select.witch-input option {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
 }
 
-.tarot-card-front {
-  background: linear-gradient(to bottom, #1a202c 0%, #0f172a 100%);
-  transform: rotateY(180deg);
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
-}
-
 .tarot-card-front-header {
   text-align: center;
   margin-bottom: 0.5rem;
@@ -563,7 +502,7 @@ select.witch-input option {
 }
 
 .tarot-card-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-serif), serif;
   font-size: 1.1rem;
   margin: 0;
   letter-spacing: 0.05em;
@@ -579,35 +518,6 @@ select.witch-input option {
 }
 
 .tarot-symbol {
-  font-size: 3rem;
-  opacity: 0.9;
-}
-
-/* Remove all the individual symbol color classes */
-.moon-symbol,
-.star-symbol,
-.priestess-symbol,
-.emperor-symbol,
-.empress-symbol,
-.lovers-symbol,
-.strength-symbol,
-.hermit-symbol,
-.wheel-symbol,
-.death-symbol,
-.tower-symbol,
-.chariot-symbol,
-.hierophant-symbol,
-.justice-symbol,
-.hanged-symbol,
-.temperance-symbol,
-.devil-symbol,
-.default-symbol {
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-/* Add a subtle glow effect to the tarot symbols */
-.tarot-symbol {
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
@@ -618,7 +528,6 @@ select.witch-input option {
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
-/* Add a subtle animation to the tarot symbols */
 .tarot-card-front-image svg {
   transition: transform 0.5s ease;
 }
@@ -640,48 +549,15 @@ select.witch-input option {
   line-height: 1.4;
 }
 
-/* Add styles for reversed cards */
 .tarot-card-front.reversed .tarot-symbol {
   transform: rotate(180deg);
 }
 
-.blik-animation {
-  position: relative;
-  width: 100%;
-  height: 60px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-.blik-animation::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: blikScan 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-@keyframes blikScan {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(200%);
-  }
-}
-
-/* Custom date picker styles */
+/* Date picker styles */
 .date-picker-container {
   @apply relative w-full;
 }
 
-/* Add these styles for the new date picker input */
 .date-picker-input-container {
   @apply witch-input flex items-center justify-between p-0 relative;
   padding: 0;
@@ -695,10 +571,6 @@ select.witch-input option {
 
 .date-picker-input-icon {
   @apply opacity-50 cursor-pointer mr-2;
-}
-
-.date-picker-input {
-  @apply witch-input cursor-pointer flex items-center justify-between;
 }
 
 .date-picker-calendar {
@@ -742,61 +614,19 @@ select.witch-input option {
   @apply bg-white text-slate-950 font-medium;
 }
 
-.date-picker-day-disabled {
-  @apply opacity-30 cursor-not-allowed;
-}
-
 .date-picker-day-today {
   @apply border border-white/30;
 }
 
-/* Make all buttons in the date picker more rounded */
-.date-picker-calendar button {
-  @apply rounded-md transition-all;
-}
-
-/* Add this to remove the up/down arrows from number inputs */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
+/* Utility classes */
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .animate-slideUp {
   animation: slideUp 0.5s ease-out;
 }
 
-/* Add this for text truncation */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -804,156 +634,19 @@ input[type="number"] {
   overflow: hidden;
 }
 
-/* Scrollbar styling for year picker */
 .scrollbar-thin {
   scrollbar-width: thin;
-}
-
-.scrollbar-thumb-white\/20::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;
 }
 
-/* Improve animation smoothness for moon loader */
-@keyframes moonPhases {
-  0% {
-    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-
-  25% {
-    background: radial-gradient(circle at 60% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  }
-
-  50% {
-    background: radial-gradient(circle at 70% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
-  }
-
-  75% {
-    background: radial-gradient(circle at 40% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  }
-
-  100% {
-    background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
+.scrollbar-thumb-white\/20::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.moon-loader {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffffff, #0f172a);
-  animation: moonPhases 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, background, box-shadow;
-}
-
-/* Improve BLIK animation smoothness */
-.blik-animation::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: blikScan 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-@keyframes blikScan {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(200%);
-  }
-}
-
-/* Improve candle flame animation */
-.candle-flame {
-  position: relative;
-  width: 10px;
-  height: 30px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
-  border-radius: 50% 50% 20% 20%;
-  margin: 0 auto;
-  animation: flicker 1.5s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-  will-change: transform, opacity;
-}
-
-@keyframes flicker {
-  0% {
-    transform: scaleY(1) rotate(-1deg);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scaleY(1.05) rotate(1deg);
-    opacity: 0.9;
-  }
-
-  100% {
-    transform: scaleY(1.1) rotate(-0.5deg);
-    opacity: 1;
-  }
-}
-
-/* Payment error animation */
-.payment-error-icon {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: rgba(239, 68, 68, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: errorPulse 2s infinite;
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-}
-
-.payment-error-icon::before,
-.payment-error-icon::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 2px;
-  background-color: rgba(239, 68, 68, 1);
-  border-radius: 1px;
-}
-
-.payment-error-icon::before {
-  transform: rotate(45deg);
-}
-
-.payment-error-icon::after {
-  transform: rotate(-45deg);
-}
-
-@keyframes errorPulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-}
-
-/* Add styles for input error states */
+/* Error states */
 .witch-input.border-red-400 {
   border-color: rgba(248, 113, 113, 0.6);
   box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.2);
@@ -964,12 +657,22 @@ input[type="number"] {
   box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.2);
 }
 
-/* Style error messages */
 .text-red-400 {
   color: rgba(248, 113, 113, 0.9);
 }
 
-/* Terms and conditions link animation */
+/* Remove number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Terms link */
 .terms-link {
   position: relative;
   transition: all 0.3s ease;
@@ -982,34 +685,10 @@ input[type="number"] {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
-.terms-link::after {
-  content: "";
-  position: absolute;
+/* Tarot card icon styles */
+.tarot-icon {
   width: 100%;
-  height: 1px;
-  bottom: -1px;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease;
-}
-
-.terms-link:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-}
-
-/* Remove the app-scaling class */
-.app-scaling {
-  font-size: 1rem;
-}
-
-/* Remove the scaled max-width containers */
-.max-w-md {
-  max-width: 28rem;
-}
-
-.max-w-4xl {
-  max-width: 56rem;
+  height: 100%;
+  display: block;
+  filter: invert(1);
 }

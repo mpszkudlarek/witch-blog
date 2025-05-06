@@ -1,11 +1,20 @@
+/**
+ * Divination Service
+ *
+ * This service handles the business logic for tarot card divination.
+ * It provides methods for generating tarot readings and interpreting cards.
+ */
+
 import type { DivinationFormData, DivinationResult, TarotCard } from "@/types"
 import { ApiClient } from "./api-client"
 import { webSocketService } from "./websocket-service"
 import { WebSocketMessageType } from "@/types/websocket"
 import { ApiConfig } from "@/config/api-config"
 import { HistoryService } from "./history-service"
+import type { WebSocketMessage } from "@/types/websocket"
+import { v4 as uuidv4 } from "uuid"
 
-// Define all tarot cards with their meanings
+// Update the TAROT_CARDS array to use the correct image paths
 const TAROT_CARDS: Array<{
   name: string
   image: string
@@ -14,75 +23,75 @@ const TAROT_CARDS: Array<{
 }> = [
   {
     name: "The Moon",
-    image: "/moon-card.svg",
+    image: "moon",
     description:
-      "The Moon represents your intuition and the mysteries of the unconscious. Your connection to the mystical is strong, and you should trust your inner voice.",
+        "The Moon represents your intuition and the mysteries of the unconscious. Your connection to the mystical is strong, and you should trust your inner voice.",
     reversedDescription:
-      "Your intuition may be clouded, leading to confusion and misunderstanding. Take time to clarify your perceptions and beware of illusion and deception.",
+        "Your intuition may be clouded, leading to confusion and misunderstanding. Take time to clarify your perceptions and beware of illusion and deception.",
   },
   {
     name: "The Star",
-    image: "/star-card.svg",
+    image: "star",
     description:
-      "The Star brings hope, inspiration, and spiritual guidance. A period of healing and renewal awaits you, bringing peace after difficulty.",
+        "The Star brings hope, inspiration, and spiritual guidance. A period of healing and renewal awaits you, bringing peace after difficulty.",
     reversedDescription:
-      "You may feel discouraged or lacking inspiration. Remember that darkness is temporary and faith can be rekindled even in the darkest times.",
+        "You may feel discouraged or lacking inspiration. Remember that darkness is temporary and faith can be rekindled even in the darkest times.",
   },
   {
     name: "The Sun",
-    image: "/sun-card.svg",
+    image: "sun",
     description:
-      "The Sun represents vitality, joy, and success. This card brings warmth and positive energy to your life, illuminating your path forward with clarity and optimism.",
+        "The Sun represents vitality, joy, and success. This card brings warmth and positive energy to your life, illuminating your path forward with clarity and optimism.",
     reversedDescription:
-      "The Sun's energy may be temporarily obscured, leading to delays or diminished confidence. Remember that even behind clouds, the sun still shines.",
+        "The Sun's energy may be temporarily obscured, leading to delays or diminished confidence. Remember that even behind clouds, the sun still shines.",
   },
   {
     name: "Death",
-    image: "/death-card.svg",
+    image: "death",
     description:
-      "Death symbolizes transformation, endings, and renewal. This card suggests a significant phase of your life is concluding, making way for new beginnings and growth.",
+        "Death symbolizes transformation, endings, and renewal. This card suggests a significant phase of your life is concluding, making way for new beginnings and growth.",
     reversedDescription:
-      "You may be resisting necessary change or transformation. Stagnation and an inability to move forward could be holding you back from personal evolution.",
+        "You may be resisting necessary change or transformation. Stagnation and an inability to move forward could be holding you back from personal evolution.",
   },
   {
     name: "The Tower",
-    image: "/tower-card.svg",
+    image: "tower",
     description:
-      "The Tower represents sudden change, revelation, and awakening. Though potentially disruptive, this upheaval clears away false structures to reveal truth.",
+        "The Tower represents sudden change, revelation, and awakening. Though potentially disruptive, this upheaval clears away false structures to reveal truth.",
     reversedDescription:
-      "You may be experiencing the chaos of change but resisting its lessons. The Tower reversed suggests internal turmoil that hasn't yet manifested outwardly.",
+        "You may be experiencing the chaos of change but resisting its lessons. The Tower reversed suggests internal turmoil that hasn't yet manifested outwardly.",
   },
   {
     name: "The Wheel of Fortune",
-    image: "/wheel-card.svg",
+    image: "wheel",
     description:
-      "The Wheel of Fortune represents cycles, destiny, and turning points. Life is in flux, and this card suggests embracing the natural changes occurring in your journey.",
+        "The Wheel of Fortune represents cycles, destiny, and turning points. Life is in flux, and this card suggests embracing the natural changes occurring in your journey.",
     reversedDescription:
-      "Bad luck or resistance to life's natural cycles may be affecting you. You may feel stuck or that circumstances are working against your progress.",
+        "Bad luck or resistance to life's natural cycles may be affecting you. You may feel stuck or that circumstances are working against your progress.",
   },
   {
     name: "The Lovers",
-    image: "/lovers-card.svg",
+    image: "lovers",
     description:
-      "The Lovers symbolize relationships, choices, and harmony. This card suggests important decisions about connections in your life.",
+        "The Lovers symbolize relationships, choices, and harmony. This card suggests important decisions about connections in your life.",
     reversedDescription:
-      "Disharmony and imbalance in relationships may be affecting you. You may be facing difficult choices or experiencing self-doubt about your values.",
+        "Disharmony and imbalance in relationships may be affecting you. You may be facing difficult choices or experiencing self-doubt about your values.",
   },
   {
     name: "The Devil",
-    image: "/devil-card.svg",
+    image: "devil",
     description:
-      "The Devil symbolizes bondage, materialism, and temptation. This card reveals areas where you may feel trapped or controlled by external forces or your own desires.",
+        "The Devil symbolizes bondage, materialism, and temptation. This card reveals areas where you may feel trapped or controlled by external forces or your own desires.",
     reversedDescription:
-      "You may be breaking free from unhealthy attachments or dependencies. The Devil reversed suggests liberation from self-imposed limitations.",
+        "You may be breaking free from unhealthy attachments or dependencies. The Devil reversed suggests liberation from self-imposed limitations.",
   },
   {
     name: "Justice",
-    image: "/justice-card.svg",
+    image: "justice",
     description:
-      "Justice represents fairness, truth, and balance. This card suggests that your actions have consequences, and fairness will prevail in your situation.",
+        "Justice represents fairness, truth, and balance. This card suggests that your actions have consequences, and fairness will prevail in your situation.",
     reversedDescription:
-      "You may be experiencing unfairness or bias in your situation. Justice reversed suggests imbalance or delayed consequences for actions.",
+        "You may be experiencing unfairness or bias in your situation. Justice reversed suggests imbalance or delayed consequences for actions.",
   },
 ]
 
@@ -105,8 +114,8 @@ export const DivinationService = {
         try {
           // Ensure WebSocket is connected
           if (
-            webSocketService.getConnectionStatus() !== "CONNECTED" &&
-            webSocketService.getConnectionStatus() !== "AUTHENTICATED"
+              webSocketService.getConnectionStatus() !== "CONNECTED" &&
+              webSocketService.getConnectionStatus() !== "AUTHENTICATED"
           ) {
             await webSocketService.connect()
           }
@@ -115,9 +124,8 @@ export const DivinationService = {
           const transactionId = sessionStorage.getItem("transactionId") || `txn-${Date.now()}`
 
           // Register for divination updates
-          const updateHandler = (message: any) => {
+          const updateHandler = (message: WebSocketMessage) => {
             console.log("Divination update:", message.payload)
-            // You could dispatch events or update UI based on these updates
           }
 
           webSocketService.on(WebSocketMessageType.DIVINATION_UPDATE, updateHandler)
@@ -183,8 +191,6 @@ export const DivinationService = {
       const response = await ApiClient.post("/divination", { userData })
 
       if (response.success && response.data) {
-        // Don't save to history here - it will be handled by the component
-
         return {
           success: true,
           tarotCards: response.data.tarotCards,
@@ -217,12 +223,11 @@ export const DivinationService = {
     // Randomly select 3 cards and determine if they're reversed (33% chance)
     const shuffledCards = [...TAROT_CARDS].sort(() => Math.random() - 0.5)
     const selectedCards = shuffledCards.slice(0, 3).map((card) => {
-      // 33% chance for a card to be reversed
       const isReversed = Math.random() < 0.33
       return {
+        id: uuidv4(),
         name: card.name,
         image: card.image,
-        // Use the reversed description if the card is reversed
         description: isReversed ? card.reversedDescription : card.description,
         reversed: isReversed,
       }
@@ -242,8 +247,6 @@ export const DivinationService = {
 
     // Generate personalized reading
     const personalizedReading = DivinationService.generatePersonalizedReading(userData, selectedCards)
-
-    // Don't save to history here - it will be handled by the component
 
     return {
       success: true,
@@ -285,6 +288,7 @@ export const DivinationService = {
     const reversedCount = selectedCards.filter((card) => card.reversed).length
 
     // Adjust the reading tone based on the number of reversed cards
+    let readingTone = ""
     if (reversedCount === 0) {
       readingTone = "Your reading reveals a path of clarity and positive energy."
     } else if (reversedCount === 1) {
@@ -293,7 +297,7 @@ export const DivinationService = {
       readingTone = "Your reading indicates significant challenges ahead. Be mindful of the warnings presented."
     } else {
       readingTone =
-        "Your reading reveals a time of great difficulty and transformation. These obstacles are opportunities for profound growth."
+          "Your reading reveals a time of great difficulty and transformation. These obstacles are opportunities for profound growth."
     }
 
     return `
@@ -358,8 +362,8 @@ export const DivinationService = {
     let singleDigit = number
     while (singleDigit > 9) {
       singleDigit = String(singleDigit)
-        .split("")
-        .reduce((sum, digit) => sum + Number.parseInt(digit), 0)
+          .split("")
+          .reduce((sum, digit) => sum + Number.parseInt(digit), 0)
     }
 
     return numberMeanings[singleDigit] || "mysterious cosmic"
@@ -392,17 +396,17 @@ export const DivinationService = {
   getRelationshipAdvice: (status: string): string => {
     const advice: Record<string, string> = {
       single:
-        "This is a time for self-discovery and personal growth. The universe is preparing you for meaningful connections ahead.",
+          "This is a time for self-discovery and personal growth. The universe is preparing you for meaningful connections ahead.",
       in_relationship:
-        "Your current partnership offers important lessons. Focus on clear communication and mutual spiritual growth.",
+          "Your current partnership offers important lessons. Focus on clear communication and mutual spiritual growth.",
       married:
-        "Your union has deep karmic significance. Together, you can achieve spiritual heights that would be difficult alone.",
+          "Your union has deep karmic significance. Together, you can achieve spiritual heights that would be difficult alone.",
       separated: "This transition holds valuable insights. Use this time to reflect on what truly nurtures your soul.",
       divorced: "You've completed an important soul contract. New beginnings await with the wisdom you've gained.",
       widowed:
-        "Your connection transcends physical boundaries. Your loved one's energy continues to guide and support you.",
+          "Your connection transcends physical boundaries. Your loved one's energy continues to guide and support you.",
       complicated:
-        "Complexity often precedes clarity. Trust that this situation is revealing important truths about your needs and path.",
+          "Complexity often precedes clarity. Trust that this situation is revealing important truths about your needs and path.",
     }
 
     return advice[status] || "Your path is uniquely yours to navigate with the wisdom you possess."

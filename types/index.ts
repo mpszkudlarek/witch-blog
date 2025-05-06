@@ -1,3 +1,4 @@
+// User input data types
 export interface DivinationFormData {
   name: string
   dateOfBirth: string
@@ -24,6 +25,7 @@ export interface BlikPaymentParams {
 
 // Divination related types
 export interface TarotCard {
+  id: string
   name: string
   image: string
   description: string
@@ -62,7 +64,7 @@ export interface BlikAPIResponse {
 }
 
 // WebSocket related types
-export interface WebSocketMessage<T = any> {
+export interface WebSocketMessage<T = unknown> {
   type: WebSocketMessageType
   payload: T
   timestamp: number

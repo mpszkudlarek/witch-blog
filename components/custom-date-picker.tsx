@@ -59,19 +59,17 @@ const formatDateForDisplay = (date: Date | null, placeholder: string): string =>
  * Supports typing dates in formats like "12122001" which will be formatted as "12-12-2001"
  */
 export default function CustomDatePicker({
-  value,
-  onChange,
-  id,
-  name,
-  required = false,
-  placeholder = "Select date of birth",
-  hasError = false,
-}: DatePickerProps) {
+                                           value,
+                                           onChange,
+                                           id,
+                                           name,
+                                           placeholder = "Select date of birth",
+                                           hasError = false,
+                                         }: DatePickerProps) {
   // Parse initial date from the input value
   const initialDate = value ? new Date(value) : null
 
   // State declarations
-  const [isInputFocused, setIsInputFocused] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate)
   const [inputValue, setInputValue] = useState(initialDate ? formatDateForDisplay(initialDate, placeholder) : "")
   const [isOpen, setIsOpen] = useState(false)
@@ -216,27 +214,26 @@ export default function CustomDatePicker({
 
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(currentYear, currentMonth, day)
       const isSelected =
-        selectedDate &&
-        selectedDate.getDate() === day &&
-        selectedDate.getMonth() === currentMonth &&
-        selectedDate.getFullYear() === currentYear
+          selectedDate &&
+          selectedDate.getDate() === day &&
+          selectedDate.getMonth() === currentMonth &&
+          selectedDate.getFullYear() === currentYear
 
       const isToday =
-        today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear
+          today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear
 
       days.push(
-        <button
-          key={day}
-          type="button"
-          onClick={() => handleDateSelect(day)}
-          className={`date-picker-day ${isSelected ? "date-picker-day-selected" : ""} ${
-            isToday ? "date-picker-day-today" : ""
-          }`}
-        >
-          {day}
-        </button>,
+          <button
+              key={day}
+              type="button"
+              onClick={() => handleDateSelect(day)}
+              className={`date-picker-day ${isSelected ? "date-picker-day-selected" : ""} ${
+                  isToday ? "date-picker-day-today" : ""
+              }`}
+          >
+            {day}
+          </button>,
       )
     }
 
@@ -264,20 +261,20 @@ export default function CustomDatePicker({
     ]
 
     return (
-      <div className="grid grid-cols-3 gap-2 p-2">
-        {monthNames.map((month, index) => (
-          <button
-            key={month}
-            type="button"
-            onClick={() => handleMonthSelect(index)}
-            className={`p-2 rounded-sm hover:bg-white/10 transition-colors ${
-              index === currentMonth ? "bg-white/20" : ""
-            }`}
-          >
-            {month.substring(0, 3)}
-          </button>
-        ))}
-      </div>
+        <div className="grid grid-cols-3 gap-2 p-2">
+          {monthNames.map((month, index) => (
+              <button
+                  key={month}
+                  type="button"
+                  onClick={() => handleMonthSelect(index)}
+                  className={`p-2 rounded-sm hover:bg-white/10 transition-colors ${
+                      index === currentMonth ? "bg-white/20" : ""
+                  }`}
+              >
+                {month.substring(0, 3)}
+              </button>
+          ))}
+        </div>
     )
   }
 
@@ -287,22 +284,22 @@ export default function CustomDatePicker({
    */
   const renderYearPicker = () => {
     return (
-      <div className="h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 p-2">
-        <div className="grid grid-cols-4 gap-2">
-          {yearRange.map((year) => (
-            <button
-              key={year}
-              type="button"
-              onClick={() => handleYearSelect(year)}
-              className={`p-2 rounded-sm hover:bg-white/10 transition-colors ${
-                year === currentYear ? "bg-white/20" : ""
-              }`}
-            >
-              {year}
-            </button>
-          ))}
+        <div className="h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 p-2">
+          <div className="grid grid-cols-4 gap-2">
+            {yearRange.map((year) => (
+                <button
+                    key={year}
+                    type="button"
+                    onClick={() => handleYearSelect(year)}
+                    className={`p-2 rounded-sm hover:bg-white/10 transition-colors ${
+                        year === currentYear ? "bg-white/20" : ""
+                    }`}
+                >
+                  {year}
+                </button>
+            ))}
+          </div>
         </div>
-      </div>
     )
   }
 
@@ -333,9 +330,9 @@ export default function CustomDatePicker({
 
       const dateAttempt2 = new Date(year, month2, day2)
       if (
-        dateAttempt2.getFullYear() === year &&
-        dateAttempt2.getMonth() === month2 &&
-        dateAttempt2.getDate() === day2
+          dateAttempt2.getFullYear() === year &&
+          dateAttempt2.getMonth() === month2 &&
+          dateAttempt2.getDate() === day2
       ) {
         return dateAttempt2
       }
@@ -427,8 +424,6 @@ export default function CustomDatePicker({
    * Validates and formats the date when the user leaves the input field
    */
   const handleInputBlur = () => {
-    setIsInputFocused(false)
-
     // Try to parse the input as a date
     const parsedDate = parseInputDate(inputValue)
 
@@ -460,85 +455,84 @@ export default function CustomDatePicker({
   ]
 
   return (
-    <div className="date-picker-container">
-      {/* Hidden input for form submission */}
-      <input type="hidden" id={id} name={name} value={formatDateForInput(selectedDate)} />
+      <div className="date-picker-container">
+        {/* Hidden input for form submission */}
+        <input type="hidden" id={id} name={name} value={formatDateForInput(selectedDate)} />
 
-      {/* Custom input display */}
-      <div className={`date-picker-input-container ${hasError ? "border-red-400" : ""}`}>
-        <input
-          ref={inputRef}
-          type="text"
-          className="date-picker-input-text"
-          placeholder={placeholder}
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={() => setIsInputFocused(true)}
-          onBlur={handleInputBlur}
-        />
-        <Calendar size={16} className="date-picker-input-icon" onClick={handleDateInputClick} />
-      </div>
+        {/* Custom input display */}
+        <div className={`date-picker-input-container ${hasError ? "border-red-400" : ""}`}>
+          <input
+              ref={inputRef}
+              type="text"
+              className="date-picker-input-text"
+              placeholder={placeholder}
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+          />
+          <Calendar size={16} className="date-picker-input-icon" onClick={handleDateInputClick} />
+        </div>
 
-      {/* Calendar dropdown */}
-      {isOpen && (
-        <div className="date-picker-calendar" ref={calendarRef}>
-          <div className="date-picker-header">
-            {viewMode === "days" && (
-              <>
-                <button type="button" onClick={prevMonth} className="date-picker-nav-button">
-                  <ChevronLeft size={16} />
-                </button>
+        {/* Calendar dropdown */}
+        {isOpen && (
+            <div className="date-picker-calendar" ref={calendarRef}>
+              <div className="date-picker-header">
+                {viewMode === "days" && (
+                    <>
+                      <button type="button" onClick={prevMonth} className="date-picker-nav-button">
+                        <ChevronLeft size={16} />
+                      </button>
 
-                <div
-                  className="date-picker-month-year cursor-pointer hover:text-white transition-colors"
-                  onClick={() => setViewMode("years")}
-                >
-                  {monthNames[currentMonth]} {currentYear}
-                </div>
+                      <div
+                          className="date-picker-month-year cursor-pointer hover:text-white transition-colors"
+                          onClick={() => setViewMode("years")}
+                      >
+                        {monthNames[currentMonth]} {currentYear}
+                      </div>
 
-                <button type="button" onClick={nextMonth} className="date-picker-nav-button">
-                  <ChevronRight size={16} />
-                </button>
-              </>
-            )}
+                      <button type="button" onClick={nextMonth} className="date-picker-nav-button">
+                        <ChevronRight size={16} />
+                      </button>
+                    </>
+                )}
 
-            {viewMode === "months" && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("years")}
-                  className="date-picker-month-year cursor-pointer hover:text-white transition-colors"
-                >
-                  {currentYear}
-                </button>
-              </>
-            )}
+                {viewMode === "months" && (
+                    <>
+                      <button
+                          type="button"
+                          onClick={() => setViewMode("years")}
+                          className="date-picker-month-year cursor-pointer hover:text-white transition-colors"
+                      >
+                        {currentYear}
+                      </button>
+                    </>
+                )}
 
-            {viewMode === "years" && (
-              <>
-                <div className="date-picker-month-year">Select Year</div>
-              </>
-            )}
-          </div>
-
-          {viewMode === "days" && (
-            <>
-              <div className="date-picker-weekdays">
-                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-                  <div key={day} className="date-picker-weekday">
-                    {day}
-                  </div>
-                ))}
+                {viewMode === "years" && (
+                    <>
+                      <div className="date-picker-month-year">Select Year</div>
+                    </>
+                )}
               </div>
 
-              <div className="date-picker-days">{renderCalendarDays()}</div>
-            </>
-          )}
+              {viewMode === "days" && (
+                  <>
+                    <div className="date-picker-weekdays">
+                      {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                          <div key={day} className="date-picker-weekday">
+                            {day}
+                          </div>
+                      ))}
+                    </div>
 
-          {viewMode === "months" && renderMonthPicker()}
-          {viewMode === "years" && renderYearPicker()}
-        </div>
-      )}
-    </div>
+                    <div className="date-picker-days">{renderCalendarDays()}</div>
+                  </>
+              )}
+
+              {viewMode === "months" && renderMonthPicker()}
+              {viewMode === "years" && renderYearPicker()}
+            </div>
+        )}
+      </div>
   )
 }

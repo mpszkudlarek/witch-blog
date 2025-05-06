@@ -30,7 +30,7 @@ export enum WebSocketMessageType {
 }
 
 // Base WebSocket message interface
-export interface WebSocketMessage<T = any> {
+export interface WebSocketMessage<T = unknown> {
   type: WebSocketMessageType
   payload: T
   timestamp: number
