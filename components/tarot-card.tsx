@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Moon, Star, Sun, X, Building, Dices, Heart, Skull, Scale } from "lucide-react"
 
 // Update the TarotCardProps interface to include the onCardClick callback
 interface TarotCardProps {
@@ -27,10 +26,8 @@ interface TarotCardProps {
  */
 export default function TarotCard({
                                       name,
-                                      image,
                                       description,
                                       reversed = false,
-                                      delay = 0,
                                       alwaysShowFront = false,
                                       onCardClick,
                                   }: TarotCardProps) {

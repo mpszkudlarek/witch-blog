@@ -26,27 +26,6 @@
     --radius: 0.5rem;
   }
 
-  .dark {
-    --background: 215 32% 3%;
-    --foreground: 0 0% 98%;
-    --card: 215 32% 3%;
-    --card-foreground: 0 0% 98%;
-    --popover: 215 32% 3%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-  }
 
   * {
     @apply border-border;
@@ -59,19 +38,6 @@
   }
 }
 
-/* Geometric accent */
-.geometric-accent {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.03;
-  background-image: linear-gradient(45deg, transparent 95%, rgba(255, 255, 255, 0.3) 95%, rgba(255, 255, 255, 0.3) 100%);
-  background-size: 30px 30px;
-}
 
 /* Form elements */
 .witch-input {
@@ -90,6 +56,14 @@ select.witch-input option {
 
 .witch-label {
   @apply text-sm opacity-70 mb-1 block;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Buttons */
@@ -161,13 +135,13 @@ select.witch-input option {
 /* Animations */
 @keyframes mysticalGlow {
   0% {
-    background-position: 0% 50%;
+    background-position: 0 50%;
   }
   50% {
     background-position: 100% 50%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0 50%;
   }
 }
 
@@ -606,9 +580,6 @@ select.witch-input option {
   @apply h-8 w-8 flex items-center justify-center rounded-full text-sm transition-colors;
 }
 
-.date-picker-day:hover:not(.date-picker-day-selected):not(.date-picker-day-disabled) {
-  @apply bg-white/10;
-}
 
 .date-picker-day-selected {
   @apply bg-white text-slate-950 font-medium;
@@ -623,9 +594,6 @@ select.witch-input option {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.animate-slideUp {
-  animation: slideUp 0.5s ease-out;
-}
 
 .line-clamp-2 {
   display: -webkit-box;
@@ -685,10 +653,3 @@ input[type="number"] {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
-/* Tarot card icon styles */
-.tarot-icon {
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: invert(1);
-}

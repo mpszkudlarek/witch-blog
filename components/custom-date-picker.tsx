@@ -11,7 +11,7 @@ interface DatePickerProps {
   /** Current date value in YYYY-MM-DD format */
   value: string
   /** Callback function when date changes */
-  onChange: (value: string) => void
+  onChangeAction: (value: string) => void
   /** HTML id attribute for the hidden input */
   id: string
   /** HTML name attribute for the hidden input */
@@ -60,7 +60,7 @@ const formatDateForDisplay = (date: Date | null, placeholder: string): string =>
  */
 export default function CustomDatePicker({
                                            value,
-                                           onChange,
+                                           onChangeAction,
                                            id,
                                            name,
                                            placeholder = "Select date of birth",
@@ -122,7 +122,7 @@ export default function CustomDatePicker({
     const newDate = new Date(currentYear, currentMonth, day)
     setSelectedDate(newDate)
     setInputValue(formatDateForDisplay(newDate, placeholder))
-    onChange(formatDateForInput(newDate))
+    onChangeAction(formatDateForInput(newDate))
     setIsOpen(false)
   }
 
@@ -405,7 +405,7 @@ export default function CustomDatePicker({
       const parsedDate = parseInputDate(digitsOnly)
       if (parsedDate) {
         setSelectedDate(parsedDate)
-        onChange(formatDateForInput(parsedDate))
+        onChangeAction(formatDateForInput(parsedDate))
       }
     }
 
@@ -429,7 +429,7 @@ export default function CustomDatePicker({
 
     if (parsedDate) {
       setSelectedDate(parsedDate)
-      onChange(formatDateForInput(parsedDate))
+      onChangeAction(formatDateForInput(parsedDate))
       // Update the input value to ensure consistent formatting
       setInputValue(formatDateForDisplay(parsedDate, placeholder))
     } else {

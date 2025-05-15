@@ -17,7 +17,7 @@ export function useHistory() {
   /**
    * Load history from storage
    */
-  const loadHistory = useCallback(async () => {
+  const loadHistory = useCallback(() => {
     setIsLoading(true)
     setError(null)
 
@@ -25,13 +25,6 @@ export function useHistory() {
       // Get history from local storage
       const history = HistoryService.getHistory()
       setHistoryItems(history)
-
-      // Try to synchronize with backend
-      await HistoryService.synchronizeHistory()
-
-      // Reload after synchronization
-      const updatedHistory = HistoryService.getHistory()
-      setHistoryItems(updatedHistory)
     } catch (error) {
       console.error("Error loading history:", error)
       setError("Failed to load history")
@@ -45,29 +38,29 @@ export function useHistory() {
    * @param id - ID of the item to delete
    */
   const deleteHistoryItem = useCallback(
-    async (id: string) => {
-      try {
-        await HistoryService.deleteHistoryItem(id)
-        setHistoryItems((prev) => prev.filter((item) => item.id !== id))
+      (id: string) => {
+        try {
+          HistoryService.deleteHistoryItem(id)
+          setHistoryItems((prev) => prev.filter((item) => item.id !== id))
 
-        // If the deleted item is currently selected, clear selection
-        if (selectedItem && selectedItem.id === id) {
-          setSelectedItem(null)
+          // If the deleted item is currently selected, clear selection
+          if (selectedItem && selectedItem.id === id) {
+            setSelectedItem(null)
+          }
+        } catch (error) {
+          console.error("Error deleting history item:", error)
+          setError("Failed to delete history item")
         }
-      } catch (error) {
-        console.error("Error deleting history item:", error)
-        setError("Failed to delete history item")
-      }
-    },
-    [selectedItem],
+      },
+      [selectedItem],
   )
 
   /**
    * Clear all history
    */
-  const clearHistory = useCallback(async () => {
+  const clearHistory = useCallback(() => {
     try {
-      await HistoryService.clearHistory()
+      HistoryService.clearHistory()
       setHistoryItems([])
       setSelectedItem(null)
     } catch (error) {

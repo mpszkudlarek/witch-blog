@@ -26,7 +26,7 @@ interface FormErrors {
 
 /**
  * DivinationForm component handles user input for tarot readings
- * Collects personal information used to generate personalized divinations
+ * Collects personal information used to generate personalized divination's
  */
 export default function DivinationForm() {
   const router = useRouter()
@@ -198,7 +198,7 @@ export default function DivinationForm() {
                   id="dateOfBirth"
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
-                  onChange={handleDateChange}
+                  onChangeAction={handleDateChange}
                   placeholder="Select your date of birth"
                   hasError={!!errors.dateOfBirth}
               />

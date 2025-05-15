@@ -1,20 +1,7 @@
-/**
- * Divination Service
- *
- * This service handles the business logic for tarot card divination.
- * It provides methods for generating tarot readings and interpreting cards.
- */
-
 import type { DivinationFormData, DivinationResult, TarotCard } from "@/types"
-import { ApiClient } from "./api-client"
-import { webSocketService } from "./websocket-service"
-import { WebSocketMessageType } from "@/types/websocket"
-import { ApiConfig } from "@/config/api-config"
-import { HistoryService } from "./history-service"
-import type { WebSocketMessage } from "@/types/websocket"
 import { v4 as uuidv4 } from "uuid"
 
-// Update the TAROT_CARDS array to use the correct image paths
+// Define all tarot cards with their meanings
 const TAROT_CARDS: Array<{
   name: string
   image: string
@@ -23,7 +10,7 @@ const TAROT_CARDS: Array<{
 }> = [
   {
     name: "The Moon",
-    image: "moon",
+    image: "/icons/moon-icon.svg",
     description:
         "The Moon represents your intuition and the mysteries of the unconscious. Your connection to the mystical is strong, and you should trust your inner voice.",
     reversedDescription:
@@ -31,7 +18,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Star",
-    image: "star",
+    image: "/icons/star-icon.svg",
     description:
         "The Star brings hope, inspiration, and spiritual guidance. A period of healing and renewal awaits you, bringing peace after difficulty.",
     reversedDescription:
@@ -39,7 +26,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Sun",
-    image: "sun",
+    image: "/icons/sun-icon.svg",
     description:
         "The Sun represents vitality, joy, and success. This card brings warmth and positive energy to your life, illuminating your path forward with clarity and optimism.",
     reversedDescription:
@@ -47,7 +34,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "Death",
-    image: "death",
+    image: "/icons/death-icon.svg",
     description:
         "Death symbolizes transformation, endings, and renewal. This card suggests a significant phase of your life is concluding, making way for new beginnings and growth.",
     reversedDescription:
@@ -55,7 +42,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Tower",
-    image: "tower",
+    image: "/icons/tower-icon.svg",
     description:
         "The Tower represents sudden change, revelation, and awakening. Though potentially disruptive, this upheaval clears away false structures to reveal truth.",
     reversedDescription:
@@ -63,7 +50,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Wheel of Fortune",
-    image: "wheel",
+    image: "/icons/wheel-icon.svg",
     description:
         "The Wheel of Fortune represents cycles, destiny, and turning points. Life is in flux, and this card suggests embracing the natural changes occurring in your journey.",
     reversedDescription:
@@ -71,7 +58,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Lovers",
-    image: "lovers",
+    image: "/icons/lovers-icon.svg",
     description:
         "The Lovers symbolize relationships, choices, and harmony. This card suggests important decisions about connections in your life.",
     reversedDescription:
@@ -79,7 +66,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "The Devil",
-    image: "devil",
+    image: "/icons/devil-icon.svg",
     description:
         "The Devil symbolizes bondage, materialism, and temptation. This card reveals areas where you may feel trapped or controlled by external forces or your own desires.",
     reversedDescription:
@@ -87,7 +74,7 @@ const TAROT_CARDS: Array<{
   },
   {
     name: "Justice",
-    image: "justice",
+    image: "/icons/justice-icon.svg",
     description:
         "Justice represents fairness, truth, and balance. This card suggests that your actions have consequences, and fairness will prevail in your situation.",
     reversedDescription:
@@ -97,6 +84,7 @@ const TAROT_CARDS: Array<{
 
 /**
  * DivinationService provides methods for generating and interpreting tarot readings
+ * This is a simplified mock implementation that will be replaced with real backend calls later
  */
 export const DivinationService = {
   /**
@@ -109,172 +97,43 @@ export const DivinationService = {
       // Check for OpenAI error flag (for demo purposes)
       const shouldFailOpenAI = typeof window !== "undefined" && sessionStorage.getItem("openai_error") === "true"
 
-      // Check if we should use WebSockets and they're available
-      if (ApiConfig.features.useWebSockets && !ApiConfig.features.useMockData) {
-        try {
-          // Ensure WebSocket is connected
-          if (
-              webSocketService.getConnectionStatus() !== "CONNECTED" &&
-              webSocketService.getConnectionStatus() !== "AUTHENTICATED"
-          ) {
-            await webSocketService.connect()
-          }
+      // Simulate processing delay
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-          // Get transaction ID from session storage or generate a new one
-          const transactionId = sessionStorage.getItem("transactionId") || `txn-${Date.now()}`
-
-          // Register for divination updates
-          const updateHandler = (message: WebSocketMessage) => {
-            console.log("Divination update:", message.payload)
-          }
-
-          webSocketService.on(WebSocketMessageType.DIVINATION_UPDATE, updateHandler)
-
-          // Send divination request via WebSocket
-          const result = await webSocketService.sendDivinationRequest({
-            userData,
-            transactionId,
-          })
-
-          // Clean up handler
-          webSocketService.off(WebSocketMessageType.DIVINATION_UPDATE, updateHandler)
-
-          if (shouldFailOpenAI) {
-            return {
-              success: true,
-              tarotCards: result.tarotCards,
-              openAIError: true,
-              message: "The cosmic threads are tangled. Our seers are struggling to channel your reading clearly.",
-            }
-          }
-
-          // If successful, save to history
-          if (result.tarotCards && result.reading) {
-            HistoryService.saveToHistory(userData, {
-              success: true,
-              tarotCards: result.tarotCards,
-              reading: result.reading,
-            })
-          }
-
-          return {
-            success: true,
-            tarotCards: result.tarotCards,
-            reading: result.reading,
-          }
-        } catch (error) {
-          console.error("WebSocket divination error:", error)
-          // Fall back to REST API if WebSocket fails
-          return DivinationService.generateDivinationRest(userData)
+      // Randomly select 3 cards and determine if they're reversed (33% chance)
+      const shuffledCards = [...TAROT_CARDS].sort(() => Math.random() - 0.5)
+      const selectedCards = shuffledCards.slice(0, 3).map((card) => {
+        const isReversed = Math.random() < 0.33
+        return {
+          id: uuidv4(),
+          name: card.name,
+          image: card.image,
+          description: isReversed ? card.reversedDescription : card.description,
+          reversed: isReversed,
         }
-      } else if (!ApiConfig.features.useMockData) {
-        // Use REST API if not using mock data
-        return DivinationService.generateDivinationRest(userData)
-      } else {
-        // Use mock data
-        return DivinationService.generateDivinationMock(userData)
+      })
+
+      if (shouldFailOpenAI) {
+        return {
+          success: true,
+          tarotCards: selectedCards,
+          openAIError: true,
+          message: "The cosmic threads are tangled. Our seers are struggling to channel your reading clearly.",
+        }
+      }
+
+      // Generate personalized reading
+      const personalizedReading = DivinationService.generatePersonalizedReading(userData, selectedCards)
+
+      return {
+        success: true,
+        tarotCards: selectedCards,
+        reading: personalizedReading,
       }
     } catch (error) {
       console.error("Error in generateDivination:", error)
       return { success: false, message: "Failed to generate divination" }
     }
-  },
-
-  /**
-   * Generate a divination using REST API
-   * @param userData - The user's personal information
-   * @returns A divination result with tarot cards and reading
-   */
-  generateDivinationRest: async (userData: DivinationFormData): Promise<DivinationResult> => {
-    try {
-      // Call the backend API
-      const response = await ApiClient.post("/divination", { userData })
-
-      if (response.success && response.data) {
-        return {
-          success: true,
-          tarotCards: response.data.tarotCards,
-          reading: response.data.reading,
-        }
-      } else {
-        return {
-          success: false,
-          message: response.error?.message || "Failed to generate divination",
-        }
-      }
-    } catch (error) {
-      console.error("REST API divination error:", error)
-      // Fall back to mock data if REST API fails
-      return DivinationService.generateDivinationMock(userData)
-    }
-  },
-
-  /**
-   * Generate a mock divination for development and testing
-   * @param userData - The user's personal information
-   * @returns A divination result with tarot cards and reading
-   */
-  generateDivinationMock: async (userData: DivinationFormData): Promise<DivinationResult> => {
-    console.log("Using mock divination generation for user:", userData.name)
-
-    // Check for OpenAI error flag (for demo purposes)
-    const shouldFailOpenAI = typeof window !== "undefined" && sessionStorage.getItem("openai_error") === "true"
-
-    // Randomly select 3 cards and determine if they're reversed (33% chance)
-    const shuffledCards = [...TAROT_CARDS].sort(() => Math.random() - 0.5)
-    const selectedCards = shuffledCards.slice(0, 3).map((card) => {
-      const isReversed = Math.random() < 0.33
-      return {
-        id: uuidv4(),
-        name: card.name,
-        image: card.image,
-        description: isReversed ? card.reversedDescription : card.description,
-        reversed: isReversed,
-      }
-    })
-
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    if (shouldFailOpenAI) {
-      return {
-        success: true,
-        tarotCards: selectedCards,
-        openAIError: true,
-        message: "The cosmic threads are tangled. Our seers are struggling to channel your reading clearly.",
-      }
-    }
-
-    // Generate personalized reading
-    const personalizedReading = DivinationService.generatePersonalizedReading(userData, selectedCards)
-
-    return {
-      success: true,
-      tarotCards: selectedCards,
-      reading: personalizedReading,
-    }
-  },
-
-  /**
-   * Create a prompt for OpenAI based on user data
-   * @param userData - The user's personal information
-   * @returns A formatted prompt for OpenAI
-   */
-  createDivinationPrompt: (userData: DivinationFormData): string => {
-    return `
-      Generate a personalized tarot reading for a person with the following characteristics:
-      
-      Name: ${userData.name}
-      Date of Birth: ${userData.dateOfBirth}
-      Favorite Color: ${userData.favoriteColor}
-      Favorite Number: ${userData.favoriteNumber}
-      Relationship Status: ${userData.relationshipStatus}
-      
-      The reading should include interpretations of the three randomly selected tarot cards.
-      The reading should be personal, insightful, and mystical in tone.
-      Include specific advice related to their relationship status and incorporate meanings of their favorite color and number.
-      Format the reading as a letter addressed to them by name.
-    `
   },
 
   /**
@@ -288,7 +147,7 @@ export const DivinationService = {
     const reversedCount = selectedCards.filter((card) => card.reversed).length
 
     // Adjust the reading tone based on the number of reversed cards
-    let readingTone = ""
+    let readingTone: string
     if (reversedCount === 0) {
       readingTone = "Your reading reveals a path of clarity and positive energy."
     } else if (reversedCount === 1) {

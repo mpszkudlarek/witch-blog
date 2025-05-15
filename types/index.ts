@@ -25,7 +25,7 @@ export interface BlikPaymentParams {
 
 // Divination related types
 export interface TarotCard {
-  id: string
+  id?: string
   name: string
   image: string
   description: string
@@ -47,51 +47,4 @@ export interface DivinationHistoryItem {
   userData: DivinationFormData
   tarotCards: TarotCard[]
   reading: string
-}
-
-// API response types
-export interface OpenAIResponse {
-  id: string
-  choices: {
-    text: string
-  }[]
-}
-
-export interface BlikAPIResponse {
-  status: string
-  transactionId: string
-  message: string
-}
-
-// WebSocket related types
-export interface WebSocketMessage<T = unknown> {
-  type: WebSocketMessageType
-  payload: T
-  timestamp: number
-}
-
-export enum WebSocketMessageType {
-  CONNECT = "CONNECT",
-  DISCONNECT = "DISCONNECT",
-  PAYMENT_REQUEST = "PAYMENT_REQUEST",
-  PAYMENT_RESPONSE = "PAYMENT_RESPONSE",
-  DIVINATION_REQUEST = "DIVINATION_REQUEST",
-  DIVINATION_RESPONSE = "DIVINATION_RESPONSE",
-  ERROR = "ERROR",
-}
-
-export interface WebSocketPaymentRequest {
-  blikCode: string
-  amount: number
-  description: string
-  reference?: string
-}
-
-export interface WebSocketDivinationRequest {
-  userData: DivinationFormData
-}
-
-export interface WebSocketErrorPayload {
-  code: string
-  message: string
 }

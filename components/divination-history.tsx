@@ -105,7 +105,7 @@ export default function DivinationHistory() {
     const renderCardSymbolPreviews = (item: DivinationHistoryItem) => {
         return (
             <div className="flex space-x-2 items-center">
-                {item.tarotCards.map((card, index) => (
+                {item.tarotCards.map((card) => (
                     <div
                         key={card.id}
                         className={`w-8 h-8 rounded-full bg-slate-900/80 border border-white/20 flex items-center justify-center ${card.reversed ? "transform rotate-180" : ""}`}
@@ -226,7 +226,7 @@ export default function DivinationHistory() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        {selectedItem.tarotCards.map((card, index) => (
+                        {selectedItem.tarotCards.map((card) => (
                             <TarotCard
                                 key={`${card.name}-${card.reversed ? "reversed" : "upright"}`}
                                 name={card.name}
@@ -309,7 +309,7 @@ export default function DivinationHistory() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mb-4">
-                                {item.tarotCards.map((card, index) => (
+                                {item.tarotCards.map((card) => (
                                     <div key={card.id} className="px-2 py-1 bg-white/10 rounded-sm text-xs">
                                         {card.name} {card.reversed && "(Reversed)"}
                                     </div>
