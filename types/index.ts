@@ -27,24 +27,28 @@ export interface BlikPaymentParams {
 export interface TarotCard {
   id?: string
   name: string
-  image: string
+  image?: string
   description: string
   reversed?: boolean
 }
 
-export interface DivinationResult {
-  success: boolean
-  message?: string
-  tarotCards?: TarotCard[]
-  reading?: string
-  openAIError?: boolean
-}
+// Possible statuses of the divination process
+export type DivinationStatus =
+    | "Started"
+    | "Pending"
+    | "PaymentAccepted"
+    | "FailedIntegrationWithChatGPT"
+    | "FinishedWithWrongPaymentStatus"
+    | "Finished"
 
 // History related types
 export interface DivinationHistoryItem {
   id: string
-  date: string
-  userData: DivinationFormData
+  date: string // mapped from createdAt
+  userId: string
+  userInfo: DivinationFormData | null
+  status: DivinationStatus
+  statusComment: string | null
   tarotCards: TarotCard[]
-  reading: string
+  reading: string | null
 }
