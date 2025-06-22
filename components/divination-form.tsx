@@ -5,7 +5,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Wand2 } from "lucide-react"
 import CustomDatePicker from "./custom-date-picker"
-import { startDivinationProcess } from "@/services/orchestrator-api" // <--- nowa funkcja
+import { startDivinationProcess } from "@/services/orchestrator-api"
+import { getOrCreateUserId } from "@/lib/utils" // ✅ dodano
 
 interface DivinationFormState {
   name: string
@@ -88,11 +89,10 @@ export default function DivinationForm() {
     setIsSubmitting(true)
 
     try {
-      const userId = "47f51fed-9289-4301-98da-318d1157722b" // TODO: potem dynamicznie
+      const userId = getOrCreateUserId() // ✅ dynamiczny userId
       const process = await startDivinationProcess(userId, formData)
       const processId = process.id
 
-      // Przechowujemy dane do ewentualnego użytku na /payment
       sessionStorage.setItem("divinationData", JSON.stringify(formData))
       router.push(`/payment?userId=${userId}&processId=${processId}`)
     } catch (err) {

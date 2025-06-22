@@ -8,8 +8,7 @@ import HistoryListView from "@/components/history/history-list-view"
 import HistoryDetailView from "@/components/history/history-detail-view"
 import EmptyState from "@/components/history/history-empty-state"
 import LoadingState from "@/components/history/history-loading-state"
-
-const MOCK_USER_ID = "47f51fed-9289-4301-98da-318d1157722b" // TODO: potem pobieraj z auth/session/localStorage
+import { getOrCreateUserId } from "@/lib/utils"
 
 export default function DivinationHistory() {
     const router = useRouter()
@@ -21,7 +20,8 @@ export default function DivinationHistory() {
         const load = async () => {
             setIsLoading(true)
             try {
-                const result = await getDivinationHistory(MOCK_USER_ID)
+                const userId = getOrCreateUserId()
+                const result = await getDivinationHistory(userId)
 
                 const filtered = result.filter((item) => {
                     const hasCards = item.tarotCards?.length > 0
