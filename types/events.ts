@@ -58,6 +58,13 @@ export interface DivinationRequestedEvent extends BaseEvent {
     cards: TarotCard[]
 }
 
+export interface ProcessStartedEvent extends BaseEvent {
+    type: {
+        type: "process.started"
+    }
+    processId: string
+}
+
 export interface ProcessEndedEvent extends BaseEvent {
     type: {
         type: "process.ended"
@@ -99,6 +106,7 @@ export interface PaymentCompletedEvent extends BaseEvent {
  */
 export type FrontendEvent =
     | DivinationRequestedEvent
+    | ProcessStartedEvent
     | ProcessEndedEvent
     | DivinationGenerationEvent
     | IncorrectBLIKCodeEvent
@@ -124,6 +132,7 @@ export type EventHandler<T extends FrontendEvent> = (event: T) => void | Promise
  */
 export interface EventHandlers {
     onDivinationRequested?: EventHandler<DivinationRequestedEvent>
+    onProcessStarted?: EventHandler<ProcessStartedEvent>
     onProcessEnded?: EventHandler<ProcessEndedEvent>
     onDivinationGeneration?: EventHandler<DivinationGenerationEvent>
     onIncorrectBLIKCode?: EventHandler<IncorrectBLIKCodeEvent>

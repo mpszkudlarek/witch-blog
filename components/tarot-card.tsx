@@ -2,28 +2,28 @@
 
 import { useState } from "react"
 
-// Update the TarotCardProps interface to include the onCardClick callback
 interface TarotCardProps {
-    /** The name of the tarot card */
     name: string
-    /** The image path for the tarot card */
     image: string
-    /** The description or meaning of the tarot card */
     description: string
-    /** Whether the card is reversed (upside down) */
     reversed?: boolean
-    /** Optional delay for animations (in milliseconds) */
     delay?: number
-    /** Whether to always show the front of the card (for history view) */
     alwaysShowFront?: boolean
-    /** Callback when card is clicked/flipped */
     onCardClick?: () => void
 }
 
-/**
- * TarotCard component displays a flippable tarot card with front and back sides
- * The card can be flipped by clicking on it to reveal its meaning
- */
+const cardIcons: Record<string, string> = {
+    moon: "moon-icon.svg",
+    star: "star-icon.svg",
+    sun: "sun-icon.svg",
+    death: "death-icon.svg",
+    tower: "tower-icon.svg",
+    wheel: "wheel-icon.svg",
+    lovers: "lovers-icon.svg",
+    justice: "justice-icon.svg",
+    devil: "devil-icon.svg",
+}
+
 export default function TarotCard({
                                       name,
                                       description,
@@ -31,51 +31,37 @@ export default function TarotCard({
                                       alwaysShowFront = false,
                                       onCardClick,
                                   }: TarotCardProps) {
-    // Track whether the card is flipped to show the front or back
     const [isFlipped, setIsFlipped] = useState(alwaysShowFront)
 
-    // Modify the handleClick function to call the onCardClick callback
     const handleClick = () => {
-        if (!alwaysShowFront) {
-            setIsFlipped(!isFlipped)
-            // Call the onCardClick callback when the card is flipped to front
-            if (!isFlipped && onCardClick) {
-                onCardClick()
-            }
-        }
+        if (alwaysShowFront || isFlipped) return
+        setIsFlipped(true)
+        onCardClick?.()
     }
 
-    // Render the appropriate icon based on the card name
     const renderCardSymbol = (cardName: string) => {
-        const iconName = (() => {
-            if (cardName.includes("Moon")) return "moon-icon.svg"
-            if (cardName.includes("Star")) return "star-icon.svg"
-            if (cardName.includes("Sun")) return "sun-icon.svg"
-            if (cardName.includes("Death")) return "death-icon.svg"
-            if (cardName.includes("Tower")) return "tower-icon.svg"
-            if (cardName.includes("Wheel")) return "wheel-icon.svg"
-            if (cardName.includes("Lovers")) return "lovers-icon.svg"
-            if (cardName.includes("Justice")) return "justice-icon.svg"
-            if (cardName.includes("Devil")) return "devil-icon.svg"
-            return "default-icon.svg"
-        })()
-
+        const iconFile = cardIcons[cardName.toLowerCase()] || "default-icon.svg"
         return (
             <img
-                src={`/icons/${iconName}`}
+                src={`/icons/${iconFile}`}
                 alt={cardName}
                 className="w-12 h-12 mx-auto invert"
             />
         )
     }
+
     return (
-        <div className={`tarot-card-container mx-auto ${isFlipped ? "flipped" : ""}`}>
+        <div
+            className={`tarot-card-container mx-auto ${isFlipped ? "flipped" : ""}`}
+            title={name}
+            data-testid={`tarot-card-${name.toLowerCase()}`}
+        >
             <div
                 className={`tarot-card-inner ${isFlipped ? "transform rotate-y-180" : ""}`}
                 style={{ transform: isFlipped ? "rotateY(180deg)" : "" }}
                 onClick={handleClick}
             >
-                {/* Card Back - shown when not flipped */}
+                {/* Card Back */}
                 <div className="tarot-card-back">
                     <div className="tarot-card-back-design">
                         <div className="tarot-card-back-border"></div>
@@ -90,10 +76,12 @@ export default function TarotCard({
                             <span className="star-4">✧</span>
                         </div>
                     </div>
-                    <div className="tarot-card-back-text">{alwaysShowFront ? "" : "Click to reveal"}</div>
+                    <div className="tarot-card-back-text">
+                        {alwaysShowFront ? "" : "Click to reveal"}
+                    </div>
                 </div>
 
-                {/* Card Front - shown when flipped */}
+                {/* Card Front */}
                 <div className={`tarot-card-front ${reversed ? "reversed" : ""}`}>
                     <div className="tarot-card-front-header">
                         <h3 className="tarot-card-title">
@@ -102,7 +90,6 @@ export default function TarotCard({
                     </div>
 
                     <div className="tarot-card-front-image">
-                        {/* Display SVG symbol based on card name */}
                         <div className="tarot-symbol">{renderCardSymbol(name)}</div>
                     </div>
 

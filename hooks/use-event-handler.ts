@@ -2,7 +2,12 @@
 
 import { useCallback, useRef, useEffect } from "react"
 import { EventHandlerRegistry } from "@/services/event-service"
-import type { EventHandlers, FrontendEvent, ValidationResult, EventHandler } from "@/types/events"
+import type {
+    EventHandlers,
+    FrontendEvent,
+    ValidationResult,
+    EventHandler
+} from "@/types/events"
 
 interface UseEventHandlerOptions {
     logErrors?: boolean
@@ -39,6 +44,9 @@ export const useEventHandler = (
         if (handlers.onProcessEnded) {
             registry.on("process.ended", handlers.onProcessEnded)
         }
+        if (handlers.onProcessStarted) {
+            registry.on("process.started", handlers.onProcessStarted)
+        }
         if (handlers.onDivinationGeneration) {
             registry.on("divination.generation", handlers.onDivinationGeneration)
         }
@@ -68,7 +76,10 @@ export const useEventHandler = (
 
             if (!result.success) {
                 const message = result.error ?? "Unknown processing error"
-                if (logErrors) console.error("Event processing failed:", message)
+                if (logErrors) {
+                    console.error("Event processing failed:", message)
+                    console.dir(rawEvent, { depth: null })
+                }
                 onParsingError?.(message, rawEvent)
             } else if (logEvents) {
                 console.log("Event processed successfully")
@@ -94,6 +105,8 @@ export const useEventHandler = (
             switch (eventType) {
                 case "divination.requested":
                     return !!current.onDivinationRequested
+                case "process.started":
+                    return !!current.onProcessStarted
                 case "process.ended":
                     return !!current.onProcessEnded
                 case "divination.generation":
@@ -112,7 +125,7 @@ export const useEventHandler = (
     return {
         processEvent,
         getRegistry,
-        hasHandler,
+        hasHandler
     }
 }
 
@@ -126,6 +139,9 @@ export const useSingleEventHandler = <T extends FrontendEvent>(
     switch (eventType) {
         case "divination.requested":
             handlers.onDivinationRequested = handler as EventHandler<FrontendEvent>
+            break
+        case "process.started":
+            handlers.onProcessStarted = handler as EventHandler<FrontendEvent>
             break
         case "process.ended":
             handlers.onProcessEnded = handler as EventHandler<FrontendEvent>

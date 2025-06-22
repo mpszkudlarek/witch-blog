@@ -1,18 +1,26 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Moon, Sparkles } from "lucide-react"
 import PaymentAnimation from "./payment-animation"
 import { useStomp } from "@/hooks/useStomp"
+import { usePayment } from "@/hooks/use-payment"
 import type { DivinationFormData } from "@/types"
+import type {
+  FrontendEvent,
+  PaymentCompletedEvent,
+  IncorrectBLIKCodeEvent,
+  ProcessEndedEvent,
+  ProcessStartedEvent
+} from "@/types/events"
 
 export default function BlikPaymentForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const userId = searchParams.get("userId") || ""
-  const processId = searchParams.get("processId") || ""
+  const [userId] = useState(() => searchParams.get("userId") || "")
+  const [processId] = useState(() => searchParams.get("processId") || "")
 
   const [blikCode, setBlikCode] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -20,6 +28,10 @@ export default function BlikPaymentForm() {
   const [divinationData, setDivinationData] = useState<DivinationFormData | null>(null)
   const [isConnectionError, setIsConnectionError] = useState(false)
   const [isPaymentError, setIsPaymentError] = useState(false)
+
+  const { processPayment, isLoading: isSubmitting, error: paymentError } = usePayment()
+
+  const ignoreEventsRef = useRef(false)
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("divinationData")
@@ -33,26 +45,57 @@ export default function BlikPaymentForm() {
     }
   }, [])
 
-  // STOMP WebSocket logic
-  useStomp(userId, processId, (event) => {
-    if (
-        typeof event === "object" &&
-        event !== null &&
-        (event as any).type?.type === "payment.completed"
-    ) {
-      const paymentInfo = event as {
-        type: { type: string }
-        state: string
-        message: string
+  const handleStompEvent = useCallback((event: FrontendEvent) => {
+    if (ignoreEventsRef.current) return
+
+    switch (event.type.type) {
+      case "process.started":
+        console.log("🟢 Process started:", (event as ProcessStartedEvent).processId)
+        break
+
+      case "payment.completed": {
+        const payment = event as PaymentCompletedEvent
+        if (payment.state === "PAYMENT_SUCCEEDED") {
+          console.log("💰 Payment success, waiting for divination...")
+        } else {
+          setIsPaymentError(true)
+          setError("Payment failed. Please try again.")
+        }
+        break
       }
 
-      if (paymentInfo.state === "PAYMENT_SUCCEEDED") {
-        setTimeout(() => {
-          router.push("/divination")
-        }, 3000)
+      case "payment.blik.incorrect": {
+        const incorrect = event as IncorrectBLIKCodeEvent
+        setIsPaymentError(true)
+        setError(incorrect.message || "Incorrect BLIK code.")
+        break
       }
+
+      case "divination.requested": {
+        sessionStorage.setItem("divinationCards", JSON.stringify((event as any).cards))
+        break
+      }
+
+      case "divination.generation": {
+        sessionStorage.setItem("divinationResult", JSON.stringify((event as any).divination ?? "Unknown reading"))
+        ignoreEventsRef.current = true
+        router.push("/divination")
+        break
+      }
+
+      case "process.ended": {
+        const ended = event as ProcessEndedEvent
+        setIsConnectionError(true)
+        setError(ended.message || "The connection was closed.")
+        break
+      }
+
+      default:
+        console.log("🧾 Unknown event (JSON):", JSON.stringify(event, null, 2))
     }
-  })
+  }, [router])
+
+  const { send } = useStomp(userId, processId, handleStompEvent)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,29 +109,7 @@ export default function BlikPaymentForm() {
     }
 
     setIsProcessing(true)
-
-    try {
-      const ws = new WebSocket(
-          `ws://localhost:8083/ws?userId=${userId}&processId=${processId}`
-      )
-      ws.onopen = () => {
-        const msg = {
-          code: blikCode,
-          amount: 15,
-          description: "Witch Blog Divination Reading",
-        }
-        ws.send(
-            JSON.stringify({
-              destination: "/app/pay",
-              payload: msg,
-            })
-        )
-      }
-    } catch (err) {
-      console.error("WebSocket error:", err)
-      setError("Could not connect to the server")
-      setIsProcessing(false)
-    }
+    await processPayment({ userId, processId, blikCode })
   }
 
   if (!divinationData) {
@@ -157,10 +178,15 @@ export default function BlikPaymentForm() {
                   </p>
                 </div>
                 {error && <div className="text-red-400 text-sm text-center">{error}</div>}
+                {paymentError && <div className="text-red-400 text-sm text-center">{paymentError}</div>}
               </div>
 
               <div className="pt-4">
-                <button type="submit" className="mystical-button w-full flex items-center justify-center">
+                <button
+                    type="submit"
+                    className="mystical-button w-full flex items-center justify-center"
+                    disabled={isSubmitting}
+                >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Complete Payment
                 </button>
