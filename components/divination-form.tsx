@@ -1,243 +1,243 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Wand2 } from "lucide-react"
+import {useState} from "react"
+import {useRouter} from "next/navigation"
+import {Wand2} from "lucide-react"
 import CustomDatePicker from "./custom-date-picker"
-import { startDivinationProcess } from "@/services/orchestrator-api"
-import { getOrCreateUserId } from "@/lib/utils" // ✅ dodano
+import {startDivinationProcess} from "@/services/orchestrator-api"
+import {getOrCreateUserId} from "@/lib/utils"
 
 interface DivinationFormState {
-  name: string
-  dateOfBirth: string
-  favoriteColor: string
-  favoriteNumber: string
-  relationshipStatus: string
+    name: string
+    dateOfBirth: string
+    favoriteColor: string
+    favoriteNumber: string
+    relationshipStatus: string
 }
 
 interface FormErrors {
-  name?: string
-  dateOfBirth?: string
-  favoriteColor?: string
-  favoriteNumber?: string
-  relationshipStatus?: string
+    name?: string
+    dateOfBirth?: string
+    favoriteColor?: string
+    favoriteNumber?: string
+    relationshipStatus?: string
 }
 
 export default function DivinationForm() {
-  const router = useRouter()
+    const router = useRouter()
 
-  const [formData, setFormData] = useState<DivinationFormState>({
-    name: "",
-    dateOfBirth: "",
-    favoriteColor: "",
-    favoriteNumber: "",
-    relationshipStatus: "",
-  })
+    const [formData, setFormData] = useState<DivinationFormState>({
+        name: "",
+        dateOfBirth: "",
+        favoriteColor: "",
+        favoriteNumber: "",
+        relationshipStatus: "",
+    })
 
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+    const [errors, setErrors] = useState<FormErrors>({})
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-    if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }))
-    }
-  }
-
-  const handleDateChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, dateOfBirth: value }))
-    if (errors.dateOfBirth) {
-      setErrors((prev) => ({ ...prev, dateOfBirth: undefined }))
-    }
-  }
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
-    let isValid = true
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Please enter your name"
-      isValid = false
-    }
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = "Please select your date of birth"
-      isValid = false
-    }
-    if (!formData.favoriteColor) {
-      newErrors.favoriteColor = "Please select your favorite color"
-      isValid = false
-    }
-    if (!formData.favoriteNumber) {
-      newErrors.favoriteNumber = "Please enter your favorite number"
-      isValid = false
-    }
-    if (!formData.relationshipStatus) {
-      newErrors.relationshipStatus = "Please select your relationship status"
-      isValid = false
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const {name, value} = e.target
+        setFormData((prev) => ({...prev, [name]: value}))
+        if (errors[name as keyof FormErrors]) {
+            setErrors((prev) => ({...prev, [name]: undefined}))
+        }
     }
 
-    setErrors(newErrors)
-    return isValid
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validateForm()) return
-
-    setIsSubmitting(true)
-
-    try {
-      const userId = getOrCreateUserId() // ✅ dynamiczny userId
-      const process = await startDivinationProcess(userId, formData)
-      const processId = process.id
-
-      sessionStorage.setItem("divinationData", JSON.stringify(formData))
-      router.push(`/payment?userId=${userId}&processId=${processId}`)
-    } catch (err) {
-      console.error("Form submission failed:", err)
-    } finally {
-      setIsSubmitting(false)
+    const handleDateChange = (value: string) => {
+        setFormData((prev) => ({...prev, dateOfBirth: value}))
+        if (errors.dateOfBirth) {
+            setErrors((prev) => ({...prev, dateOfBirth: undefined}))
+        }
     }
-  }
 
-  const colorOptions = [
-    { value: "", label: "Select your favorite color" },
-    { value: "red", label: "Red - Passion & Energy" },
-    { value: "orange", label: "Orange - Creativity & Enthusiasm" },
-    { value: "yellow", label: "Yellow - Joy & Intellect" },
-    { value: "green", label: "Green - Growth & Harmony" },
-    { value: "blue", label: "Blue - Tranquility & Truth" },
-    { value: "purple", label: "Purple - Spirituality & Mystery" },
-    { value: "pink", label: "Pink - Love & Nurturing" },
-    { value: "brown", label: "Brown - Stability & Grounding" },
-    { value: "black", label: "Black - Power & Protection" },
-    { value: "white", label: "White - Purity & Clarity" },
-    { value: "silver", label: "Silver - Intuition & Reflection" },
-    { value: "gold", label: "Gold - Wisdom & Prosperity" },
-    { value: "other", label: "Other - Mystical Essence" },
-  ]
+    const validateForm = (): boolean => {
+        const newErrors: FormErrors = {}
+        let isValid = true
 
-  const cost = 15
+        if (!formData.name.trim()) {
+            newErrors.name = "Please enter your name"
+            isValid = false
+        }
+        if (!formData.dateOfBirth) {
+            newErrors.dateOfBirth = "Please select your date of birth"
+            isValid = false
+        }
+        if (!formData.favoriteColor) {
+            newErrors.favoriteColor = "Please select your favorite color"
+            isValid = false
+        }
+        if (!formData.favoriteNumber) {
+            newErrors.favoriteNumber = "Please enter your favorite number"
+            isValid = false
+        }
+        if (!formData.relationshipStatus) {
+            newErrors.relationshipStatus = "Please select your relationship status"
+            isValid = false
+        }
 
-  return (
-      <div className="witch-card border border-white/10">
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-          {/* Name Field */}
-          <div>
-            <label htmlFor="name" className="witch-label">Your Name</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`witch-input ${errors.name ? "border-red-400" : ""}`}
-                placeholder="Enter your name"
-            />
-            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-          </div>
+        setErrors(newErrors)
+        return isValid
+    }
 
-          {/* Date of Birth Field */}
-          <div>
-            <label htmlFor="dateOfBirth" className="witch-label">Date of Birth</label>
-            <CustomDatePicker
-                id="dateOfBirth"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChangeAction={handleDateChange}
-                placeholder="Select your date of birth"
-                hasError={!!errors.dateOfBirth}
-            />
-            {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
-          </div>
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!validateForm()) return
 
-          {/* Favorite Color Field */}
-          <div>
-            <label htmlFor="favoriteColor" className="witch-label">Favorite Color</label>
-            <select
-                id="favoriteColor"
-                name="favoriteColor"
-                value={formData.favoriteColor}
-                onChange={handleChange}
-                className={`witch-input bg-transparent ${errors.favoriteColor ? "border-red-400" : ""}`}
-            >
-              {colorOptions.map((option) => (
-                  <option key={option.value} value={option.value} disabled={option.value === ""}>
-                    {option.label}
-                  </option>
-              ))}
-            </select>
-            {errors.favoriteColor && <p className="text-red-400 text-xs mt-1">{errors.favoriteColor}</p>}
-          </div>
+        setIsSubmitting(true)
 
-          {/* Favorite Number Field */}
-          <div>
-            <label htmlFor="favoriteNumber" className="witch-label">Favorite Number</label>
-            <input
-                type="number"
-                id="favoriteNumber"
-                name="favoriteNumber"
-                value={formData.favoriteNumber}
-                onChange={handleChange}
-                className={`witch-input ${errors.favoriteNumber ? "border-red-400" : ""}`}
-                placeholder="Enter your favorite number"
-                min="0"
-                step="1"
-            />
-            {errors.favoriteNumber && <p className="text-red-400 text-xs mt-1">{errors.favoriteNumber}</p>}
-          </div>
+        try {
+            const userId = getOrCreateUserId()
+            const process = await startDivinationProcess(userId, formData)
+            const processId = process.id
 
-          {/* Relationship Status Field */}
-          <div>
-            <label htmlFor="relationshipStatus" className="witch-label">Relationship Status</label>
-            <select
-                id="relationshipStatus"
-                name="relationshipStatus"
-                value={formData.relationshipStatus}
-                onChange={handleChange}
-                className={`witch-input bg-transparent ${errors.relationshipStatus ? "border-red-400" : ""}`}
-            >
-              <option value="" disabled>Select your relationship status</option>
-              <option value="single">Single</option>
-              <option value="in_relationship">In a relationship</option>
-              <option value="married">Married</option>
-              <option value="separated">Separated</option>
-              <option value="divorced">Divorced</option>
-              <option value="widowed">Widowed</option>
-              <option value="complicated">It&apos;s complicated</option>
-            </select>
-            {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
-          </div>
+            sessionStorage.setItem("divinationData", JSON.stringify(formData))
+            router.push(`/payment?userId=${userId}&processId=${processId}`)
+        } catch (err) {
+            console.error("Form submission failed:", err)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
-          <div className="border-t border-white/10 pt-4 mt-4">
-            <div className="flex justify-between items-center mb-4 text-lg font-medium">
-              <span>Total:</span>
-              <span>${cost.toFixed(2)}</span>
-            </div>
-          </div>
+    const colorOptions = [
+        {value: "", label: "Select your favorite color"},
+        {value: "red", label: "Red - Passion & Energy"},
+        {value: "orange", label: "Orange - Creativity & Enthusiasm"},
+        {value: "yellow", label: "Yellow - Joy & Intellect"},
+        {value: "green", label: "Green - Growth & Harmony"},
+        {value: "blue", label: "Blue - Tranquility & Truth"},
+        {value: "purple", label: "Purple - Spirituality & Mystery"},
+        {value: "pink", label: "Pink - Love & Nurturing"},
+        {value: "brown", label: "Brown - Stability & Grounding"},
+        {value: "black", label: "Black - Power & Protection"},
+        {value: "white", label: "White - Purity & Clarity"},
+        {value: "silver", label: "Silver - Intuition & Reflection"},
+        {value: "gold", label: "Gold - Wisdom & Prosperity"},
+        {value: "other", label: "Other - Mystical Essence"},
+    ]
 
-          <div className="pt-4">
-            <button
-                type="submit"
-                className="mystical-button w-full flex items-center justify-center"
-                disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                  <span className="flex items-center">
+    const cost = 15
+
+    return (
+        <div className="witch-card border border-white/10">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                {/* Name Field */}
+                <div>
+                    <label htmlFor="name" className="witch-label">Your Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={`witch-input ${errors.name ? "border-red-400" : ""}`}
+                        placeholder="Enter your name"
+                    />
+                    {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+                </div>
+
+                {/* Date of Birth Field */}
+                <div>
+                    <label htmlFor="dateOfBirth" className="witch-label">Date of Birth</label>
+                    <CustomDatePicker
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChangeAction={handleDateChange}
+                        placeholder="Select your date of birth"
+                        hasError={!!errors.dateOfBirth}
+                    />
+                    {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
+                </div>
+
+                {/* Favorite Color Field */}
+                <div>
+                    <label htmlFor="favoriteColor" className="witch-label">Favorite Color</label>
+                    <select
+                        id="favoriteColor"
+                        name="favoriteColor"
+                        value={formData.favoriteColor}
+                        onChange={handleChange}
+                        className={`witch-input bg-transparent ${errors.favoriteColor ? "border-red-400" : ""}`}
+                    >
+                        {colorOptions.map((option) => (
+                            <option key={option.value} value={option.value} disabled={option.value === ""}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.favoriteColor && <p className="text-red-400 text-xs mt-1">{errors.favoriteColor}</p>}
+                </div>
+
+                {/* Favorite Number Field */}
+                <div>
+                    <label htmlFor="favoriteNumber" className="witch-label">Favorite Number</label>
+                    <input
+                        type="number"
+                        id="favoriteNumber"
+                        name="favoriteNumber"
+                        value={formData.favoriteNumber}
+                        onChange={handleChange}
+                        className={`witch-input ${errors.favoriteNumber ? "border-red-400" : ""}`}
+                        placeholder="Enter your favorite number"
+                        min="0"
+                        step="1"
+                    />
+                    {errors.favoriteNumber && <p className="text-red-400 text-xs mt-1">{errors.favoriteNumber}</p>}
+                </div>
+
+                {/* Relationship Status Field */}
+                <div>
+                    <label htmlFor="relationshipStatus" className="witch-label">Relationship Status</label>
+                    <select
+                        id="relationshipStatus"
+                        name="relationshipStatus"
+                        value={formData.relationshipStatus}
+                        onChange={handleChange}
+                        className={`witch-input bg-transparent ${errors.relationshipStatus ? "border-red-400" : ""}`}
+                    >
+                        <option value="" disabled>Select your relationship status</option>
+                        <option value="single">Single</option>
+                        <option value="in_relationship">In a relationship</option>
+                        <option value="married">Married</option>
+                        <option value="separated">Separated</option>
+                        <option value="divorced">Divorced</option>
+                        <option value="widowed">Widowed</option>
+                        <option value="complicated">It&apos;s complicated</option>
+                    </select>
+                    {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
+                </div>
+
+                <div className="border-t border-white/10 pt-4 mt-4">
+                    <div className="flex justify-between items-center mb-4 text-lg font-medium">
+                        <span>Total:</span>
+                        <span>${cost.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <div className="pt-4">
+                    <button
+                        type="submit"
+                        className="mystical-button w-full flex items-center justify-center"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? (
+                            <span className="flex items-center">
                 <span className="animate-pulse mr-2">✧</span>
                 Preparing...
               </span>
-              ) : (
-                  <span className="flex items-center">
-                <Wand2 className="h-4 w-4 mr-2" />
+                        ) : (
+                            <span className="flex items-center">
+                <Wand2 className="h-4 w-4 mr-2"/>
                 Begin Divination
               </span>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-  )
+                        )}
+                    </button>
+                </div>
+            </form>
+        </div>
+    )
 }
