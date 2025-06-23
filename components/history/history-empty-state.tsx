@@ -1,5 +1,5 @@
-import { Moon, Sparkles } from "lucide-react"
-import { useRouter } from "next/navigation"
+import {Moon, Sparkles} from "lucide-react"
+import {useRouter} from "next/navigation"
 
 export default function EmptyState() {
     const router = useRouter()
@@ -8,7 +8,7 @@ export default function EmptyState() {
             <div className="mb-8">
                 <div className="relative w-24 h-24 mx-auto mb-6">
                     <div className="absolute inset-0 rounded-full bg-slate-900/80 border border-white/20 flex items-center justify-center">
-                        <Sparkles className="h-10 w-10 text-white/50" />
+                        <Sparkles className="h-10 w-10 text-white/50"/>
                     </div>
                 </div>
 
@@ -18,7 +18,7 @@ export default function EmptyState() {
                 </p>
             </div>
             <button onClick={() => router.push("/")} className="mystical-button flex items-center justify-center mx-auto">
-                <Moon className="h-4 w-4 mr-2 opacity-80" />
+                <Moon className="h-4 w-4 mr-2 opacity-80"/>
                 Return to Sacred Portal
             </button>
         </div>

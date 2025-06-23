@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { getDivinationHistory } from "@/services/history-service"
-import { DivinationHistoryItem } from "@/types"
+import {useState, useEffect} from "react"
+import {useRouter} from "next/navigation"
+import {getDivinationHistory} from "@/services/history-service"
+import {DivinationHistoryItem} from "@/types"
 import HistoryListView from "@/components/history/history-list-view"
 import HistoryDetailView from "@/components/history/history-detail-view"
 import EmptyState from "@/components/history/history-empty-state"
 import LoadingState from "@/components/history/history-loading-state"
-import { getOrCreateUserId } from "@/lib/utils"
+import {getOrCreateUserId} from "@/lib/utils"
 
 export default function DivinationHistory() {
     const router = useRouter()
@@ -43,9 +43,9 @@ export default function DivinationHistory() {
         load()
     }, [])
 
-    if (isLoading) return <LoadingState />
-    if (!history.length) return <EmptyState />
-    if (selected) return <HistoryDetailView item={selected} onBack={() => setSelected(null)} />
+    if (isLoading) return <LoadingState/>
+    if (!history.length) return <EmptyState/>
+    if (selected) return <HistoryDetailView item={selected} onBack={() => setSelected(null)}/>
 
     return (
         <div className="space-y-6">
@@ -59,7 +59,7 @@ export default function DivinationHistory() {
                 </button>
             </div>
 
-            <HistoryListView items={history} onSelect={(item) => setSelected(item)} />
+            <HistoryListView items={history} onSelect={(item) => setSelected(item)}/>
         </div>
     )
 }
