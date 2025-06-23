@@ -39,7 +39,7 @@ export interface TarotCard {
 }
 
 /**
- * Base event structure - all events have this nested type structure
+ * Base structure for all backend-sent events.
  */
 export interface BaseEvent {
     type: {
@@ -47,33 +47,26 @@ export interface BaseEvent {
     }
 }
 
+/**
+ * Shared structure for events with user and process context.
+ */
+export interface UserProcessEventBase extends BaseEvent {
+    userId: string
+    processId: string
+}
+
 // ============================================================================
 // EVENT INTERFACES - Each event type with discriminated union pattern
 // ============================================================================
 
-export interface DivinationRequestedEvent extends BaseEvent {
+export interface BusinessErrorEvent extends BaseEvent {
     type: {
-        type: "divination.requested"
+        type: "error.business"
     }
-    cards: TarotCard[]
-}
-
-export interface ProcessStartedEvent extends BaseEvent {
-    type: {
-        type: "process.started"
-    }
-    processId: string
-}
-
-export interface ProcessEndedEvent extends BaseEvent {
-    type: {
-        type: "process.ended"
-    }
-    status: DivinationProcessStatus
     message: string
 }
 
-export interface DivinationGenerationEvent extends BaseEvent {
+export interface DivinationGenerationEvent extends UserProcessEventBase {
     type: {
         type: "divination.generation"
     }
@@ -81,14 +74,21 @@ export interface DivinationGenerationEvent extends BaseEvent {
     status: DivinationGenerationStatus
 }
 
-export interface IncorrectBLIKCodeEvent extends BaseEvent {
+export interface DivinationRequestedEvent extends UserProcessEventBase {
+    type: {
+        type: "divination.requested"
+    }
+    cards: TarotCard[]
+}
+
+export interface IncorrectBLIKCodeEvent extends UserProcessEventBase {
     type: {
         type: "payment.blik.incorrect"
     }
     message: string
 }
 
-export interface PaymentCompletedEvent extends BaseEvent {
+export interface PaymentCompletedEvent extends UserProcessEventBase {
     type: {
         type: "payment.completed"
     }
@@ -96,68 +96,84 @@ export interface PaymentCompletedEvent extends BaseEvent {
     message: string
 }
 
+export interface ProcessEndedEvent extends UserProcessEventBase {
+    type: {
+        type: "process.ended"
+    }
+    status: DivinationProcessStatus
+    message: string
+}
+
+export interface ProcessStartedEvent extends UserProcessEventBase {
+    type: {
+        type: "process.started"
+    }
+}
+
+export interface TechnicalErrorEvent extends BaseEvent {
+    type: {
+        type: "error.technical"
+    }
+    message: string
+}
+
 // ============================================================================
-// UNION TYPES - Discriminated union for all possible events
+// UNION TYPES
 // ============================================================================
 
-/**
- * Union type representing all possible frontend events
- * This is the main type used throughout the application
- */
 export type FrontendEvent =
-    | DivinationRequestedEvent
-    | ProcessStartedEvent
-    | ProcessEndedEvent
+    | BusinessErrorEvent
     | DivinationGenerationEvent
+    | DivinationRequestedEvent
     | IncorrectBLIKCodeEvent
     | PaymentCompletedEvent
+    | ProcessEndedEvent
+    | ProcessStartedEvent
+    | TechnicalErrorEvent
 
-/**
- * Extract event type strings for type-safe event type checking
- */
 export type EventType = FrontendEvent["type"]["type"]
 
 // ============================================================================
 // EVENT HANDLER TYPES
 // ============================================================================
 
-/**
- * Generic event handler function type
- */
 export type EventHandler<T extends FrontendEvent> = (event: T) => void | Promise<void>
 
-/**
- * Map of all possible event handlers
- * Optional handlers allow for selective event handling
- */
 export interface EventHandlers {
-    onDivinationRequested?: EventHandler<DivinationRequestedEvent>
-    onProcessStarted?: EventHandler<ProcessStartedEvent>
-    onProcessEnded?: EventHandler<ProcessEndedEvent>
+    onBusinessError?: EventHandler<BusinessErrorEvent>
     onDivinationGeneration?: EventHandler<DivinationGenerationEvent>
+    onDivinationRequested?: EventHandler<DivinationRequestedEvent>
     onIncorrectBLIKCode?: EventHandler<IncorrectBLIKCodeEvent>
     onPaymentCompleted?: EventHandler<PaymentCompletedEvent>
+    onProcessEnded?: EventHandler<ProcessEndedEvent>
+    onProcessStarted?: EventHandler<ProcessStartedEvent>
+    onTechnicalError?: EventHandler<TechnicalErrorEvent>
     onUnknownEvent?: (rawEvent: unknown) => void | Promise<void>
 }
 
 // ============================================================================
-// VALIDATION SCHEMAS - Runtime validation helpers
+// VALIDATION RESULT TYPES
 // ============================================================================
 
-/**
- * Validation result for event parsing
- */
 export interface ValidationResult<T> {
     success: boolean
     data?: T
     error?: string
 }
 
-/**
- * Event parsing error details
- */
 export interface EventParsingError {
     type: "validation_error" | "unknown_event_type" | "malformed_json"
     message: string
     rawEvent?: unknown
+}
+
+// ============================================================================
+// FORM DATA (OPTIONAL) – shared with divination form submission
+// ============================================================================
+
+export interface DivinationFormData {
+    name: string
+    dateOfBirth?: string
+    favoriteNumber?: number
+    relationshipStatus?: string
 }

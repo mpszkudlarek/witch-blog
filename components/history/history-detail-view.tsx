@@ -1,13 +1,30 @@
 "use client"
 
 import type {DivinationHistoryItem} from "@/types"
-import {ArrowLeft, Calendar, Wand2} from "lucide-react"
+import {ArrowLeft, Calendar, Wand2, RotateCw} from "lucide-react"
 import TarotCard from "../tarot-card"
 import {formatDistanceToNow} from "@/lib/date-utils"
+import ReactMarkdown from "react-markdown"
 
 interface Props {
     item: DivinationHistoryItem
     onBack: () => void
+}
+
+const CARD_NAME_MAP: Record<string, string> = {
+    death: "Death",
+    devil: "The Devil",
+    justice: "Justice",
+    lovers: "The Lovers",
+    moon: "The Moon",
+    star: "The Star",
+    sun: "The Sun",
+    tower: "The Tower",
+    wheel: "Wheel of Fortune",
+}
+
+function formatCardName(raw: string): string {
+    return CARD_NAME_MAP[raw] ?? raw
 }
 
 export default function HistoryDetailView({item, onBack}: Props) {
@@ -40,8 +57,8 @@ export default function HistoryDetailView({item, onBack}: Props) {
                         {item.tarotCards.map((card) => (
                             <TarotCard
                                 key={card.name}
-                                name={card.name}
-                                image={card.image ?? "/icons/default-icon.svg"}
+                                name={formatCardName(card.name)}
+                                image={card.name}
                                 description={card.description}
                                 reversed={card.reversed}
                                 alwaysShowFront
@@ -60,16 +77,14 @@ export default function HistoryDetailView({item, onBack}: Props) {
                             <h2 className="text-xl font-serif">Your Reading</h2>
                         </div>
 
-                        <div className="space-y-4 leading-relaxed">
-                            {item.reading.split("\n\n").map((paragraph, index) => (
-                                <p key={index} className={`${index === 0 ? "font-serif text-lg" : ""} text-white/90`}>
-                                    {paragraph}
-                                </p>
-                            ))}
+                        <div
+                            className="prose prose-invert max-w-none text-white/90 prose-headings:font-serif prose-p:font-light prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed">
+                            <ReactMarkdown>{item.reading.replace(/\\n/g, "\n")}</ReactMarkdown>
                         </div>
                     </div>
                 )}
-                {item.status !== "Finished" && item.statusComment && (
+
+                {item.statusComment && (
                     <div className="mt-6">
                         <p className="text-sm text-white/70 font-light leading-relaxed">
                             {item.statusComment}
@@ -77,6 +92,17 @@ export default function HistoryDetailView({item, onBack}: Props) {
                     </div>
                 )}
 
+                <div className="text-center pt-6">
+                    <button
+                        onClick={() => {
+                            // TODO: Add retry logic (e.g. router.push to /payment?userId=...&processId=...)
+                        }}
+                        className="mystical-button flex items-center justify-center mx-auto"
+                    >
+                        <RotateCw className="h-4 w-4 mr-2 opacity-60"/>
+                        Try Again
+                    </button>
+                </div>
             </div>
         </div>
     )

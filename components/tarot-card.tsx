@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import {useState} from "react"
 
 interface TarotCardProps {
     name: string
@@ -26,6 +26,7 @@ const cardIcons: Record<string, string> = {
 
 export default function TarotCard({
                                       name,
+                                      image,
                                       description,
                                       reversed = false,
                                       alwaysShowFront = false,
@@ -39,12 +40,12 @@ export default function TarotCard({
         onCardClick?.()
     }
 
-    const renderCardSymbol = (cardName: string) => {
-        const iconFile = cardIcons[cardName.toLowerCase()] || "default-icon.svg"
+    const renderCardSymbol = (imageName: string) => {
+        const iconFile = cardIcons[imageName.toLowerCase()] || "default-icon.svg"
         return (
             <img
                 src={`/icons/${iconFile}`}
-                alt={cardName}
+                alt={imageName}
                 className="w-12 h-12 mx-auto invert"
             />
         )
@@ -54,11 +55,11 @@ export default function TarotCard({
         <div
             className={`tarot-card-container mx-auto ${isFlipped ? "flipped" : ""}`}
             title={name}
-            data-testid={`tarot-card-${name.toLowerCase()}`}
+            data-testid={`tarot-card-${image.toLowerCase()}`}
         >
             <div
                 className={`tarot-card-inner ${isFlipped ? "transform rotate-y-180" : ""}`}
-                style={{ transform: isFlipped ? "rotateY(180deg)" : "" }}
+                style={{transform: isFlipped ? "rotateY(180deg)" : ""}}
                 onClick={handleClick}
             >
                 {/* Card Back */}
@@ -90,7 +91,7 @@ export default function TarotCard({
                     </div>
 
                     <div className="tarot-card-front-image">
-                        <div className="tarot-symbol">{renderCardSymbol(name)}</div>
+                        <div className="tarot-symbol">{renderCardSymbol(image)}</div>
                     </div>
 
                     <div className="tarot-card-front-footer">
