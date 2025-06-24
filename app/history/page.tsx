@@ -1,6 +1,6 @@
 import type {Metadata} from "next"
 import DivinationHistory from "@/components/divination-history"
-import {Moon, Star, BookOpen} from "lucide-react"
+import {Moon, Star} from "lucide-react"
 
 export const metadata: Metadata = {
     title: "Your Divination History | Witch Blog",
@@ -22,12 +22,6 @@ export default function HistoryPage() {
                         The echoes of your past readings remain in the cosmic memory
                     </p>
 
-                    <div className="mt-4 flex justify-center">
-                        <div className="inline-flex items-center px-3 py-1.5 bg-white/5 rounded-sm">
-                            <BookOpen className="h-4 w-4 mr-2 opacity-70"/>
-                            <span className="text-sm opacity-80">Your personal archive of mystical insights</span>
-                        </div>
-                    </div>
                 </div>
 
                 <DivinationHistory/>
