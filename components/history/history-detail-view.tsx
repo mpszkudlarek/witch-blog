@@ -9,14 +9,13 @@ import {formatCardName} from "@/lib/tarot-utils"
 
 interface Props {
     item: DivinationHistoryItem
-    onBack: () => void
+    onBackAction: () => void
 }
 
-
-export default function HistoryDetailView({item, onBack}: Props) {
+export default function HistoryDetailView({item, onBackAction}: Props) {
     return (
         <div className="space-y-6">
-            <button onClick={onBack} className="mystical-button flex items-center">
+            <button onClick={onBackAction} className="mystical-button flex items-center">
                 <ArrowLeft className="h-4 w-4 mr-2"/>
                 Back to History
             </button>

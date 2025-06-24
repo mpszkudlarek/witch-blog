@@ -17,7 +17,7 @@ export default function DivinationHistory() {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const load = async () => {
+        void (async () => {
             setIsLoading(true)
             try {
                 const userId = getOrCreateUserId()
@@ -34,18 +34,16 @@ export default function DivinationHistory() {
 
                 setHistory(filtered)
             } catch (err) {
-                console.error("❌ Failed to load history:", err)
+                console.error("History: Failed to load history:", err)
             } finally {
                 setIsLoading(false)
             }
-        }
-
-        load()
+        })()
     }, [])
 
     if (isLoading) return <LoadingState/>
     if (!history.length) return <EmptyState/>
-    if (selected) return <HistoryDetailView item={selected} onBack={() => setSelected(null)}/>
+    if (selected) return <HistoryDetailView item={selected} onBackAction={() => setSelected(null)}/>
 
     return (
         <div className="space-y-6">
@@ -59,7 +57,7 @@ export default function DivinationHistory() {
                 </button>
             </div>
 
-            <HistoryListView items={history} onSelect={(item) => setSelected(item)}/>
+            <HistoryListView items={history} onSelectAction={(item) => setSelected(item)}/>
         </div>
     )
 }

@@ -29,28 +29,26 @@ export default function BlikPaymentForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    const [userId] = useState(() => searchParams.get("userId") || "")
-    const [processId] = useState(() => searchParams.get("processId") || "")
+    const userId = searchParams.get("userId") || ""
+    const processId = searchParams.get("processId") || ""
 
+    const [divinationData, setDivinationData] = useState<DivinationFormData | null>(null)
     const [blikCode, setBlikCode] = useState("")
     const [isProcessing, setIsProcessing] = useState(false)
-    const [error, setError] = useState("")
-    const [divinationData, setDivinationData] = useState<DivinationFormData | null>(null)
     const [hasTechnicalError, setHasTechnicalError] = useState(false)
     const [hasBusinessError, setHasBusinessError] = useState(false)
     const [isPaymentError, setIsPaymentError] = useState(false)
+    const [error, setError] = useState("")
 
     const {processPayment, isLoading: isSubmitting, error: paymentError} = usePayment()
-
     const ignoreEventsRef = useRef(false)
 
     useEffect(() => {
-        const storedData = sessionStorage.getItem("divinationData")
-        if (storedData) {
+        const stored = sessionStorage.getItem("divinationData")
+        if (stored) {
             try {
-                setDivinationData(JSON.parse(storedData))
-            } catch (e) {
-                console.error("Error parsing stored divination data:", e)
+                setDivinationData(JSON.parse(stored))
+            } catch {
                 setError("Invalid session data. Please return to the form.")
             }
         }
@@ -58,98 +56,76 @@ export default function BlikPaymentForm() {
 
     const handleStompEvent = useCallback((event: FrontendEvent) => {
         if (ignoreEventsRef.current) return
-        console.log("[EVENT] Received:", event)
 
-        switch (event.type.type) {
-            case "process.started": {
-                const started = event as ProcessStartedEvent
-                console.log("[EVENT] process.started", started.processId)
-                break
-            }
-
-            case "payment.completed": {
-                const payment = event as PaymentCompletedEvent
-                switch (payment.state) {
+        const handlers: Record<string, (e: FrontendEvent) => void> = {
+            "process.started": (e) => {
+                console.log("Process started:", (e as ProcessStartedEvent).processId)
+            },
+            "payment.completed": (e) => {
+                const {state, message} = e as PaymentCompletedEvent
+                switch (state) {
                     case PaymentState.PAYMENT_SUCCEEDED:
-                        console.log("[PAYMENT] Success, waiting for divination...")
+                        console.log("PAYMENT: Payment succeeded")
                         break
                     case PaymentState.PAYMENT_FAILED_BUSINESS_ERROR:
                         setHasBusinessError(true)
-                        setError(payment.message || "A business error occurred.")
+                        setError(message || "PAYMENT: A business error occurred.")
                         break
                     case PaymentState.PAYMENT_FAILED_TECHNICAL_ERROR:
                         setHasTechnicalError(true)
-                        setError(payment.message || "A technical error occurred.")
+                        setError(message || "PAYMENT:A technical error occurred.")
                         break
                     default:
                         setIsPaymentError(true)
-                        setError(payment.message || "Payment failed. Please try again.")
+                        setError(message || "PAYMENT: Payment failed. Please try again.")
                 }
-                break
-            }
-
-            case "payment.blik.incorrect": {
-                const incorrect = event as IncorrectBLIKCodeEvent
+            },
+            "payment.blik.incorrect": (e) => {
                 setIsPaymentError(true)
-                setError(incorrect.message || "Incorrect BLIK code.")
-                break
-            }
-
-            case "divination.requested": {
-                const requested = event as DivinationRequestedEvent
-                sessionStorage.setItem("divinationCards", JSON.stringify(requested.cards))
-                console.log("[DIVINATION] Cards stored in sessionStorage")
-                break
-            }
-
-            case "divination.generation": {
-                const generation = event as DivinationGenerationEvent
-                sessionStorage.setItem("divinationResult", JSON.stringify({
-                    divination: generation.divination ?? "Unknown reading",
-                    status: generation.status ?? "SUCCESS"
-                }))
-                console.log("[DIVINATION] Result stored, navigating to /divination")
+                setError((e as IncorrectBLIKCodeEvent).message || "Incorrect BLIK code.")
+            },
+            "divination.requested": (e) => {
+                const {cards} = e as DivinationRequestedEvent
+                sessionStorage.setItem("divinationCards", JSON.stringify(cards))
+                console.log("Cards stored")
+            },
+            "divination.generation": (e) => {
+                const {divination, status} = e as DivinationGenerationEvent
+                sessionStorage.setItem("divinationResult", JSON.stringify({divination, status}))
+                console.log("🔮 Reading complete")
                 ignoreEventsRef.current = true
                 router.push("/divination")
-                break
-            }
-
-            case "error.business": {
-                const business = event as BusinessErrorEvent
+            },
+            "error.business": (e) => {
                 setHasBusinessError(true)
-                setError(business.message || "A business error occurred.")
-                break
-            }
-
-            case "error.technical": {
-                const technical = event as TechnicalErrorEvent
+                setError((e as BusinessErrorEvent).message || "A business error occurred.")
+            },
+            "error.technical": (e) => {
                 setHasTechnicalError(true)
-                setError(technical.message || "A technical error occurred.")
-                break
-            }
-
-            case "process.ended": {
-                const ended = event as ProcessEndedEvent
-                switch (ended.status) {
-                    case "FinishedWithWrongPaymentStatus":
-                        setHasBusinessError(true)
-                        setError(ended.message || "The payment status was invalid.")
-                        break
-                    default:
-                        setHasTechnicalError(true)
-                        setError(ended.message || "The connection was closed.")
+                setError((e as TechnicalErrorEvent).message || "A technical error occurred.")
+            },
+            "process.ended": (e) => {
+                const {status, message} = e as ProcessEndedEvent
+                if (status === "FinishedWithWrongPaymentStatus") {
+                    setHasBusinessError(true)
+                    setError(message || "The payment status was invalid.")
+                } else {
+                    setHasTechnicalError(true)
+                    setError(message || "The connection was closed.")
                 }
-                break
-            }
+            },
+        }
 
-            default:
-                console.warn("[EVENT] Unknown event type:", event)
+        const type = event.type?.type
+        if (type && handlers[type]) {
+            handlers[type](event)
+        } else {
+            console.warn("Unknown event:", event)
         }
     }, [router])
 
-
+    // ✅ hook always called at the top level with valid (possibly empty) strings
     useStomp(userId, processId, handleStompEvent)
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -199,9 +175,7 @@ export default function BlikPaymentForm() {
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="blikCode" className="witch-label">
-                                BLIK Code
-                            </label>
+                            <label htmlFor="blikCode" className="witch-label">BLIK Code</label>
                             <input
                                 type="text"
                                 id="blikCode"
