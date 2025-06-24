@@ -34,18 +34,17 @@ export default function PaymentAnimation({hasError = false}: PaymentAnimationPro
             <div className="flex flex-col items-center justify-center space-y-8">
                 <div className="blik-animation">
                     <div className="h-full flex items-center justify-center">
-                        <p className="text-lg font-medium">Processing BLIK Payment</p>
+                        <p className="text-lg font-medium">Invoking the Astral BLIK Tribute</p>
                     </div>
                 </div>
 
                 <div className="space-y-4 w-full">
-                    {/* Step 1: Verifying code */}
                     <div className="flex items-center">
                         <div
                             className={`w-5 h-5 rounded-full mr-3 ${step >= 1 ? "bg-white" : "bg-gray-700"} transition-colors duration-700`}
                         ></div>
                         <p className={`${step >= 1 ? "opacity-100" : "opacity-50"} transition-opacity duration-700`}>
-                            Verifying code
+                            Deciphering Astral Glyphs
                         </p>
                     </div>
 
@@ -54,7 +53,7 @@ export default function PaymentAnimation({hasError = false}: PaymentAnimationPro
                             className={`w-5 h-5 rounded-full mr-3 ${step >= 2 ? "bg-white" : "bg-gray-700"} transition-colors duration-700`}
                         ></div>
                         <p className={`${step >= 2 ? "opacity-100" : "opacity-50"} transition-opacity duration-700`}>
-                            Processing payment
+                            Channeling Energies
                         </p>
                     </div>
 

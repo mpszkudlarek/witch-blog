@@ -58,23 +58,23 @@ export default function DivinationForm() {
         let isValid = true
 
         if (!formData.name.trim()) {
-            newErrors.name = "Please enter your name"
+            newErrors.name = "The stars need a name to align"
             isValid = false
         }
         if (!formData.dateOfBirth) {
-            newErrors.dateOfBirth = "Please select your date of birth"
+            newErrors.dateOfBirth = "Reveal the date of your celestial arrival"
             isValid = false
         }
         if (!formData.favoriteColor) {
-            newErrors.favoriteColor = "Please select your favorite color"
+            newErrors.favoriteColor = "Choose the hue of your aura"
             isValid = false
         }
         if (!formData.favoriteNumber) {
-            newErrors.favoriteNumber = "Please enter your favorite number"
+            newErrors.favoriteNumber = "Your guiding number is missing"
             isValid = false
         }
         if (!formData.relationshipStatus) {
-            newErrors.relationshipStatus = "Please select your relationship status"
+            newErrors.relationshipStatus = "Tell us of your heart's journey"
             isValid = false
         }
 
@@ -103,7 +103,7 @@ export default function DivinationForm() {
     }
 
     const colorOptions = [
-        {value: "", label: "Select your favorite color"},
+        {value: "", label: "Choose the hue of your aura"},
         {value: "red", label: "Red - Passion & Energy"},
         {value: "orange", label: "Orange - Creativity & Enthusiasm"},
         {value: "yellow", label: "Yellow - Joy & Intellect"},
@@ -119,14 +119,14 @@ export default function DivinationForm() {
         {value: "other", label: "Other - Mystical Essence"},
     ]
 
-    const cost = 15
+    const cost = 1
 
     return (
         <div className="witch-card border border-white/10">
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 {/* Name Field */}
                 <div>
-                    <label htmlFor="name" className="witch-label">Your Name</label>
+                    <label htmlFor="name" className="witch-label">Name Given by the Stars</label>
                     <input
                         type="text"
                         id="name"
@@ -134,20 +134,20 @@ export default function DivinationForm() {
                         value={formData.name}
                         onChange={handleChange}
                         className={`witch-input ${errors.name ? "border-red-400" : ""}`}
-                        placeholder="Enter your name"
+                        placeholder="Whisper your true name..."
                     />
                     {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                 </div>
 
                 {/* Date of Birth Field */}
                 <div>
-                    <label htmlFor="dateOfBirth" className="witch-label">Date of Birth</label>
+                    <label htmlFor="dateOfBirth" className="witch-label">Birth Under the Moon</label>
                     <CustomDatePicker
                         id="dateOfBirth"
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChangeAction={handleDateChange}
-                        placeholder="Select your date of birth"
+                        placeholder="Select the night you arrived"
                         hasError={!!errors.dateOfBirth}
                     />
                     {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
@@ -155,7 +155,7 @@ export default function DivinationForm() {
 
                 {/* Favorite Color Field */}
                 <div>
-                    <label htmlFor="favoriteColor" className="witch-label">Favorite Color</label>
+                    <label htmlFor="favoriteColor" className="witch-label">Color of Your Aura</label>
                     <select
                         id="favoriteColor"
                         name="favoriteColor"
@@ -174,7 +174,7 @@ export default function DivinationForm() {
 
                 {/* Favorite Number Field */}
                 <div>
-                    <label htmlFor="favoriteNumber" className="witch-label">Favorite Number</label>
+                    <label htmlFor="favoriteNumber" className="witch-label">Your Guiding Number</label>
                     <input
                         type="number"
                         id="favoriteNumber"
@@ -182,7 +182,7 @@ export default function DivinationForm() {
                         value={formData.favoriteNumber}
                         onChange={handleChange}
                         className={`witch-input ${errors.favoriteNumber ? "border-red-400" : ""}`}
-                        placeholder="Enter your favorite number"
+                        placeholder="What number follows you in dreams?"
                         min="0"
                         step="1"
                     />
@@ -191,7 +191,7 @@ export default function DivinationForm() {
 
                 {/* Relationship Status Field */}
                 <div>
-                    <label htmlFor="relationshipStatus" className="witch-label">Relationship Status</label>
+                    <label htmlFor="relationshipStatus" className="witch-label">Matters of the Heart</label>
                     <select
                         id="relationshipStatus"
                         name="relationshipStatus"
@@ -199,21 +199,21 @@ export default function DivinationForm() {
                         onChange={handleChange}
                         className={`witch-input bg-transparent ${errors.relationshipStatus ? "border-red-400" : ""}`}
                     >
-                        <option value="" disabled>Select your relationship status</option>
-                        <option value="single">Single</option>
-                        <option value="in_relationship">In a relationship</option>
-                        <option value="married">Married</option>
-                        <option value="separated">Separated</option>
-                        <option value="divorced">Divorced</option>
-                        <option value="widowed">Widowed</option>
-                        <option value="complicated">It&apos;s complicated</option>
+                        <option value="" disabled>Share the state of your heart</option>
+                        <option value="single">Alone on the Path</option>
+                        <option value="in_relationship">Entwined with Another</option>
+                        <option value="married">Bound by Sacred Vows</option>
+                        <option value="separated">Wandering Apart</option>
+                        <option value="divorced">Released from Union</option>
+                        <option value="widowed">Left Behind by Fate</option>
+                        <option value="complicated">Entangled in Mysteries</option>
                     </select>
                     {errors.relationshipStatus && <p className="text-red-400 text-xs mt-1">{errors.relationshipStatus}</p>}
                 </div>
 
                 <div className="border-t border-white/10 pt-4 mt-4">
                     <div className="flex justify-between items-center mb-4 text-lg font-medium">
-                        <span>Total:</span>
+                        <span>Offering to the Spirits:</span>
                         <span>${cost.toFixed(2)}</span>
                     </div>
                 </div>
@@ -226,14 +226,14 @@ export default function DivinationForm() {
                     >
                         {isSubmitting ? (
                             <span className="flex items-center">
-                <span className="animate-pulse mr-2">✧</span>
-                Preparing...
-              </span>
+                                <span className="animate-pulse mr-2">✧</span>
+                                Preparing your path...
+                            </span>
                         ) : (
                             <span className="flex items-center">
-                <Wand2 className="h-4 w-4 mr-2"/>
-                Begin Divination
-              </span>
+                                <Wand2 className="h-4 w-4 mr-2"/>
+                                Unveil My Fate
+                            </span>
                         )}
                     </button>
                 </div>

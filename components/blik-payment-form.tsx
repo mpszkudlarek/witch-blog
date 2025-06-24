@@ -49,7 +49,7 @@ export default function BlikPaymentForm() {
             try {
                 setDivinationData(JSON.parse(stored))
             } catch {
-                setError("Invalid session data. Please return to the form.")
+                setError("The astral link was broken. Please begin the ritual anew.")
             }
         }
     }, [])
@@ -69,20 +69,20 @@ export default function BlikPaymentForm() {
                         break
                     case PaymentState.PAYMENT_FAILED_BUSINESS_ERROR:
                         setHasBusinessError(true)
-                        setError(message || "PAYMENT: A business error occurred.")
+                        setError(message || "The cosmic energies were misaligned.")
                         break
                     case PaymentState.PAYMENT_FAILED_TECHNICAL_ERROR:
                         setHasTechnicalError(true)
-                        setError(message || "PAYMENT:A technical error occurred.")
+                        setError(message || "The arcane channel was severed.")
                         break
                     default:
                         setIsPaymentError(true)
-                        setError(message || "PAYMENT: Payment failed. Please try again.")
+                        setError(message || "The offering failed. Consult the stars and try again.")
                 }
             },
             "payment.blik.incorrect": (e) => {
                 setIsPaymentError(true)
-                setError((e as IncorrectBLIKCodeEvent).message || "Incorrect BLIK code.")
+                setError((e as IncorrectBLIKCodeEvent).message || "The glyphs are false. The spirits reject this code.")
             },
             "divination.requested": (e) => {
                 const {cards} = e as DivinationRequestedEvent
@@ -98,20 +98,20 @@ export default function BlikPaymentForm() {
             },
             "error.business": (e) => {
                 setHasBusinessError(true)
-                setError((e as BusinessErrorEvent).message || "A business error occurred.")
+                setError((e as BusinessErrorEvent).message || "A worldly misalignment disrupted the flow of energy.")
             },
             "error.technical": (e) => {
                 setHasTechnicalError(true)
-                setError((e as TechnicalErrorEvent).message || "A technical error occurred.")
+                setError((e as TechnicalErrorEvent).message || "The aether trembled. The connection was lost.")
             },
             "process.ended": (e) => {
                 const {status, message} = e as ProcessEndedEvent
                 if (status === "FinishedWithWrongPaymentStatus") {
                     setHasBusinessError(true)
-                    setError(message || "The payment status was invalid.")
+                    setError(message || "The offering was not accepted by the cosmic ledger.")
                 } else {
                     setHasTechnicalError(true)
-                    setError(message || "The connection was closed.")
+                    setError(message || "The astral channel faded into silence.")
                 }
             },
         }
@@ -124,7 +124,6 @@ export default function BlikPaymentForm() {
         }
     }, [router])
 
-    // ✅ hook always called at the top level with valid (possibly empty) strings
     useStomp(userId, processId, handleStompEvent)
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -135,7 +134,7 @@ export default function BlikPaymentForm() {
         setIsPaymentError(false)
 
         if (!/^\d{6}$/.test(blikCode)) {
-            setError("Please enter a valid 6-digit BLIK code")
+            setError("A sacred code must be 6 glyphs in length.")
             return
         }
 
@@ -146,15 +145,15 @@ export default function BlikPaymentForm() {
     if (!divinationData) {
         return (
             <div className="witch-card bg-black/50 backdrop-blur-sm text-center p-6">
-                <p>No divination data found. Please return to the home page.</p>
+                <p>The spirits whisper of missing intent... No prophecy may be revealed.</p>
                 <button onClick={() => router.push("/")} className="mystical-button mt-4">
-                    Return Home
+                    Return to the Mortal Realm
                 </button>
             </div>
         )
     }
 
-    const finalCost = 15
+    const finalCost = 1
 
     return (
         <div className="witch-card bg-black/50 backdrop-blur-sm">
@@ -168,14 +167,14 @@ export default function BlikPaymentForm() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="mb-6 p-4 border border-white/10 rounded-sm">
                         <div className="flex justify-between items-center text-lg font-medium">
-                            <span>Total:</span>
+                            <span>Mystical Tribute:</span>
                             <span>${finalCost.toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="blikCode" className="witch-label">BLIK Code</label>
+                            <label htmlFor="blikCode" className="witch-label">Astral BLIK Sigil</label>
                             <input
                                 type="text"
                                 id="blikCode"
@@ -188,7 +187,7 @@ export default function BlikPaymentForm() {
                                 required
                             />
                             <p className="text-xs text-center mt-2 opacity-70">
-                                Enter the 6-digit code from your banking app
+                                Inscribe the 6-digit glyph from your ritual banking scroll
                             </p>
                         </div>
                         {error && <div className="text-red-400 text-sm text-center">{error}</div>}
@@ -202,20 +201,20 @@ export default function BlikPaymentForm() {
                             disabled={isSubmitting}
                         >
                             <Sparkles className="h-4 w-4 mr-2"/>
-                            Complete Payment
+                            Invoke the BLIK Rite
                         </button>
                     </div>
 
                     <div className="text-center text-xs opacity-70 pt-2">
                         <p>
-                            By proceeding, you agree to our{" "}
+                            By invoking this rite, you submit to our{" "}
                             <a
                                 href="https://www.facebook.com/profile.php?id=100091842926056"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="terms-link underline hover:text-white transition-colors"
                             >
-                                terms and conditions
+                                cosmic terms and ethereal conditions
                             </a>
                         </p>
                     </div>
