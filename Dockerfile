@@ -1,4 +1,3 @@
-# Etap 1: build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -7,9 +6,8 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 COPY . .
-RUN npm run build --no-lint # here for demo is --no-lint option, tbc in the future
+RUN npm run build --no-lint
 
-# Etap 2: runtime
 FROM node:20-alpine AS runner
 
 ENV NODE_ENV=production
@@ -23,4 +21,4 @@ COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["node_modules/.bin/next", "start"]
+CMD ["npm", "start"]
