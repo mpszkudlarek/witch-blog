@@ -3,7 +3,7 @@
 import Link from "next/link"
 import {useRouter} from "next/navigation"
 import DivinationForm from "@/components/divination-form"
-import {Moon, Star, BookOpen} from "lucide-react"
+import {Moon, Star, BookOpen, UserCog} from "lucide-react"
 
 export default function HomeClient() {
     useRouter();
@@ -13,7 +13,7 @@ export default function HomeClient() {
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center mb-4">
                         <Moon className="h-6 w-6 mr-2 opacity-80"/>
-                        <h1 className="text-3xl font-serif">The Witch&#39;s Divination</h1>
+                        <h1 className="text-3xl font-serif">Witchblog 2.0</h1>
                         <Star className="h-6 w-6 ml-2 opacity-80"/>
                     </div>
                     <div className="w-16 h-1 bg-white/30 mx-auto mb-4"></div>
@@ -24,13 +24,21 @@ export default function HomeClient() {
 
                 <DivinationForm/>
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 flex flex-col items-center space-y-2 text-sm">
                     <Link
                         href="/history"
-                        className="inline-flex items-center text-sm opacity-70 hover:opacity-100 transition-opacity"
+                        className="inline-flex items-center opacity-70 hover:opacity-100 transition-opacity"
                     >
                         <BookOpen className="h-4 w-4 mr-2"/>
-                        View Your Reading History
+                        Reveal Past Visions
+                    </Link>
+
+                    <Link
+                        href="/admin"
+                        className="inline-flex items-center text-blue-400 hover:text-blue-300 opacity-70 hover:opacity-100 transition-opacity"
+                    >
+                        <UserCog className="h-4 w-4 mr-2"/>
+                        Mystic Ledger
                     </Link>
                 </div>
             </div>
