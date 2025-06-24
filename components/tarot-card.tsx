@@ -2,16 +2,8 @@
 
 import {useState} from "react"
 import {cardIcons} from "@/lib/tarot-utils"
+import type {TarotCardProps} from "@/types"
 
-interface TarotCardProps {
-    name: string
-    image: string
-    description: string
-    reversed?: boolean
-    delay?: number
-    alwaysShowFront?: boolean
-    onCardClick?: () => void
-}
 
 export default function TarotCard({
                                       name,
@@ -51,7 +43,6 @@ export default function TarotCard({
                 style={{transform: isFlipped ? "rotateY(180deg)" : ""}}
                 onClick={handleClick}
             >
-                {/* Card Back */}
                 <div className="tarot-card-back">
                     <div className="tarot-card-back-design">
                         <div className="tarot-card-back-border"></div>

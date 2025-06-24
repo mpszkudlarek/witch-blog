@@ -2,22 +2,19 @@
 
 import {useState, useEffect} from "react"
 import {useRouter} from "next/navigation"
-import DivinationLoading from "./divination-loading"
-import TarotCard from "./tarot-card"
 import {Moon, Scroll, Wand2, RotateCw} from "lucide-react"
 import ReactMarkdown from "react-markdown"
-import {formatCardName} from "@/lib/tarot-utils"
 
-interface StoredCard {
-    cardName: string
-    description: string
-    isReversed: boolean
-}
+import TarotCard from "./tarot-card"
+import DivinationLoading from "./divination-loading"
+
+import {formatCardName} from "@/lib/tarot-utils"
+import type {RawTarotCard} from "@/types/raw"
 
 export default function DivinationResults() {
     const router = useRouter()
 
-    const [cards, setCards] = useState<StoredCard[]>([])
+    const [cards, setCards] = useState<RawTarotCard[]>([])
     const [reading, setReading] = useState<string>("")
     const [isFailure, setIsFailure] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
@@ -35,7 +32,7 @@ export default function DivinationResults() {
         }
 
         try {
-            setCards(JSON.parse(rawCards))
+            setCards(JSON.parse(rawCards) as RawTarotCard[])
 
             try {
                 const parsed = JSON.parse(rawReading)
@@ -51,7 +48,6 @@ export default function DivinationResults() {
             } catch {
                 setReading(rawReading.replace(/\\n/g, "\n"))
             }
-
         } catch (err) {
             console.error("Error parsing stored data:", err)
             router.push("/")
@@ -60,21 +56,18 @@ export default function DivinationResults() {
         }
     }, [router])
 
-    const allCardsClicked = clickedCards.every((clicked) => clicked)
+    const allCardsClicked = clickedCards.every(Boolean)
 
     const handleCardClick = (index: number) => {
-        const newClicked = [...clickedCards]
-        newClicked[index] = true
-        setClickedCards(newClicked)
+        const updated = [...clickedCards]
+        updated[index] = true
+        setClickedCards(updated)
     }
 
     const handleReturnToPortal = () => {
         if (!showReading) router.push("/")
         else setShowLeaveConfirmation(true)
     }
-
-    const confirmLeave = () => router.push("/")
-    const cancelLeave = () => setShowLeaveConfirmation(false)
 
     const handleRetry = () => {
         sessionStorage.removeItem("divinationCards")
@@ -166,10 +159,10 @@ export default function DivinationResults() {
                             Are you sure you wish to leave? The cosmic energies may not align the same way again.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                            <button onClick={confirmLeave} className="mystical-button">
+                            <button onClick={() => router.push("/")} className="mystical-button">
                                 Yes, I Shall Return
                             </button>
-                            <button onClick={cancelLeave} className="mystical-button bg-opacity-50">
+                            <button onClick={() => setShowLeaveConfirmation(false)} className="mystical-button bg-opacity-50">
                                 No, I Will Remain
                             </button>
                         </div>

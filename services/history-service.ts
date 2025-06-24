@@ -1,53 +1,12 @@
-import { DivinationHistoryItem, TarotCard, DivinationFormData } from "@/types"
+import {DivinationHistoryItem, TarotCard, DivinationFormData} from "@/types"
+import {getCardIconFilename} from "@/lib/tarot-utils"
+import type {RawDivinationProcess} from "@/types/raw"
 
-const iconMap: Record<string, string> = {
-    lovers: "lovers-icon.svg",
-    justice: "justice-icon.svg",
-    wheel: "wheel-icon.svg",
-    death: "death-icon.svg",
-    devil: "devil-icon.svg",
-    moon: "moon-icon.svg",
-    star: "star-icon.svg",
-    sun: "sun-icon.svg",
-    tower: "tower-icon.svg",
-}
-
-function getCardIconFilename(cardName: string): string {
-    const key = Object.keys(iconMap).find((k) =>
-        cardName.toLowerCase().includes(k)
-    )
-    return key ? `/icons/${iconMap[key]}` : "/icons/default-icon.svg"
-}
-
-type RawTarotCard = {
-    cardName: string
-    description: string
-    isReversed: boolean
-}
-
-type RawUserInfo = {
-    name?: string
-    dateOfBirth?: string
-    favoriteColor?: string
-    relationshipStatus?: string
-    favoriteNumber?: string
-}
-
-type RawDivinationProcess = {
-    id: string
-    createdAt: string
-    divination: string | null
-    status: string
-    statusComment: string | null
-    userId: string
-    userInfo: RawUserInfo | null
-    tarotCards: RawTarotCard[] | null
-}
 
 export async function getDivinationHistory(userId: string): Promise<DivinationHistoryItem[]> {
     const res = await fetch(`http://localhost:8080/orchestrator-service/process/${userId}`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
     })
 
     if (!res.ok) {

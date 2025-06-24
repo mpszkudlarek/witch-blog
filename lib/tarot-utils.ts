@@ -27,3 +27,10 @@ export const cardIcons: Record<string, string> = {
     justice: "justice-icon.svg",
     devil: "devil-icon.svg",
 }
+
+export function getCardIconFilename(cardName: string): string {
+    const key = Object.keys(cardIcons).find((k) =>
+        cardName.toLowerCase().includes(k)
+    )
+    return key ? `/icons/${cardIcons[key]}` : "/icons/default-icon.svg"
+}

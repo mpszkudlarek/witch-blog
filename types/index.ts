@@ -27,9 +27,15 @@ export interface BlikPaymentParams {
 export interface TarotCard {
   id?: string
   name: string
-  image?: string
+  image: string
   description: string
   reversed?: boolean
+}
+
+export type TarotCardProps = Pick<TarotCard, "name" | "image" | "description" | "reversed"> & {
+  delay?: number
+  alwaysShowFront?: boolean
+  onCardClick?: () => void
 }
 
 // Possible statuses of the divination process
