@@ -1,6 +1,6 @@
 "use client"
 
-import {useState, useEffect, useCallback, useRef} from "react"
+import React, {useState, useEffect, useCallback, useRef} from "react"
 import {useRouter, useSearchParams} from "next/navigation"
 import {Sparkles} from "lucide-react"
 
@@ -58,12 +58,12 @@ export default function BlikPaymentForm() {
 
     const handleStompEvent = useCallback((event: FrontendEvent) => {
         if (ignoreEventsRef.current) return
-        console.log("📦 Received event from backend:", JSON.stringify(event, null, 2))
+        console.log("[EVENT] Received:", event)
 
         switch (event.type.type) {
             case "process.started": {
                 const started = event as ProcessStartedEvent
-                console.log("🟢 Process started:", started.processId)
+                console.log("[EVENT] process.started", started.processId)
                 break
             }
 
@@ -71,7 +71,7 @@ export default function BlikPaymentForm() {
                 const payment = event as PaymentCompletedEvent
                 switch (payment.state) {
                     case PaymentState.PAYMENT_SUCCEEDED:
-                        console.log("💰 Payment success, waiting for divination...")
+                        console.log("[PAYMENT] Success, waiting for divination...")
                         break
                     case PaymentState.PAYMENT_FAILED_BUSINESS_ERROR:
                         setHasBusinessError(true)
@@ -98,6 +98,7 @@ export default function BlikPaymentForm() {
             case "divination.requested": {
                 const requested = event as DivinationRequestedEvent
                 sessionStorage.setItem("divinationCards", JSON.stringify(requested.cards))
+                console.log("[DIVINATION] Cards stored in sessionStorage")
                 break
             }
 
@@ -107,6 +108,7 @@ export default function BlikPaymentForm() {
                     divination: generation.divination ?? "Unknown reading",
                     status: generation.status ?? "SUCCESS"
                 }))
+                console.log("[DIVINATION] Result stored, navigating to /divination")
                 ignoreEventsRef.current = true
                 router.push("/divination")
                 break
@@ -140,11 +142,11 @@ export default function BlikPaymentForm() {
                 break
             }
 
-
             default:
-                console.log("🧾 Unknown event (JSON):", JSON.stringify(event, null, 2))
+                console.warn("[EVENT] Unknown event type:", event)
         }
     }, [router])
+
 
     useStomp(userId, processId, handleStompEvent)
 
