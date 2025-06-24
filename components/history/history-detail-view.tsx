@@ -6,6 +6,7 @@ import TarotCard from "../tarot-card"
 import {formatDistanceToNow} from "@/lib/date-utils"
 import ReactMarkdown from "react-markdown"
 import {formatCardName} from "@/lib/tarot-utils"
+import {useRouter} from "next/navigation"
 
 interface Props {
     item: DivinationHistoryItem
@@ -13,6 +14,9 @@ interface Props {
 }
 
 export default function HistoryDetailView({item, onBackAction}: Props) {
+    const router = useRouter()
+    const shouldShowRetry = item.status === "FailedIntegrationWithChatGPT"
+
     return (
         <div className="space-y-6">
             <button onClick={onBackAction} className="mystical-button flex items-center">
@@ -77,17 +81,17 @@ export default function HistoryDetailView({item, onBackAction}: Props) {
                     </div>
                 )}
 
-                <div className="text-center pt-6">
-                    <button
-                        onClick={() => {
-                            // TODO: Add retry logic (e.g. router.push to /payment?userId=...&processId=...)
-                        }}
-                        className="mystical-button flex items-center justify-center mx-auto"
-                    >
-                        <RotateCw className="h-4 w-4 mr-2 opacity-60"/>
-                        Try Again
-                    </button>
-                </div>
+                {shouldShowRetry && (
+                    <div className="text-center pt-6">
+                        <button
+                            onClick={() => router.push("/")}
+                            className="mystical-button flex items-center justify-center mx-auto"
+                        >
+                            <RotateCw className="h-4 w-4 mr-2 opacity-60"/>
+                            Try Again
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )
