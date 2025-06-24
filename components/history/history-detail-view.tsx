@@ -5,27 +5,13 @@ import {ArrowLeft, Calendar, Wand2, RotateCw} from "lucide-react"
 import TarotCard from "../tarot-card"
 import {formatDistanceToNow} from "@/lib/date-utils"
 import ReactMarkdown from "react-markdown"
+import {formatCardName} from "@/lib/tarot-utils"
 
 interface Props {
     item: DivinationHistoryItem
     onBack: () => void
 }
 
-const CARD_NAME_MAP: Record<string, string> = {
-    death: "Death",
-    devil: "The Devil",
-    justice: "Justice",
-    lovers: "The Lovers",
-    moon: "The Moon",
-    star: "The Star",
-    sun: "The Sun",
-    tower: "The Tower",
-    wheel: "Wheel of Fortune",
-}
-
-function formatCardName(raw: string): string {
-    return CARD_NAME_MAP[raw] ?? raw
-}
 
 export default function HistoryDetailView({item, onBack}: Props) {
     return (

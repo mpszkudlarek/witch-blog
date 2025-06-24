@@ -1,6 +1,7 @@
 "use client"
 
 import {useState} from "react"
+import {cardIcons} from "@/lib/tarot-utils"
 
 interface TarotCardProps {
     name: string
@@ -10,18 +11,6 @@ interface TarotCardProps {
     delay?: number
     alwaysShowFront?: boolean
     onCardClick?: () => void
-}
-
-const cardIcons: Record<string, string> = {
-    moon: "moon-icon.svg",
-    star: "star-icon.svg",
-    sun: "sun-icon.svg",
-    death: "death-icon.svg",
-    tower: "tower-icon.svg",
-    wheel: "wheel-icon.svg",
-    lovers: "lovers-icon.svg",
-    justice: "justice-icon.svg",
-    devil: "devil-icon.svg",
 }
 
 export default function TarotCard({

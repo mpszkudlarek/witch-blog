@@ -1,32 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import {useState, useEffect} from "react"
+import {useRouter} from "next/navigation"
 import DivinationLoading from "./divination-loading"
 import TarotCard from "./tarot-card"
-import { Moon, Scroll, Wand2, RotateCw } from "lucide-react"
+import {Moon, Scroll, Wand2, RotateCw} from "lucide-react"
 import ReactMarkdown from "react-markdown"
+import {formatCardName} from "@/lib/tarot-utils"
 
 interface StoredCard {
     cardName: string
     description: string
     isReversed: boolean
-}
-
-const CARD_NAME_MAP: Record<string, string> = {
-    death: "Death",
-    devil: "The Devil",
-    justice: "Justice",
-    lovers: "The Lovers",
-    moon: "The Moon",
-    star: "The Star",
-    sun: "The Sun",
-    tower: "The Tower",
-    wheel: "Wheel of Fortune",
-}
-
-function formatCardName(raw: string): string {
-    return CARD_NAME_MAP[raw] ?? raw
 }
 
 export default function DivinationResults() {
@@ -97,7 +82,7 @@ export default function DivinationResults() {
         router.push("/")
     }
 
-    if (isLoading) return <DivinationLoading />
+    if (isLoading) return <DivinationLoading/>
 
     return (
         <div className="space-y-8">
@@ -121,7 +106,7 @@ export default function DivinationResults() {
                             onClick={() => setShowReading(true)}
                             className="mystical-button flex items-center justify-center mx-auto"
                         >
-                            <Wand2 className="h-4 w-4 mr-2 opacity-60" />
+                            <Wand2 className="h-4 w-4 mr-2 opacity-60"/>
                             Reveal Your Reading
                         </button>
                     ) : (
@@ -136,13 +121,14 @@ export default function DivinationResults() {
                 <div className="witch-card bg-black/50 backdrop-blur-sm p-6 border border-white/10 animate-fadeIn">
                     <div className="flex items-center mb-4">
                         <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
-                            <Scroll className="h-4 w-4 opacity-40" />
+                            <Scroll className="h-4 w-4 opacity-40"/>
                         </div>
                         <div className="mx-3 h-px w-12 bg-white/20"></div>
                         <h2 className="text-xl font-serif tracking-wide">Your Mystical Reading</h2>
                     </div>
 
-                    <div className="prose prose-invert max-w-none text-white/90 prose-headings:font-serif prose-p:font-light prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed">
+                    <div
+                        className="prose prose-invert max-w-none text-white/90 prose-headings:font-serif prose-p:font-light prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed">
                         <ReactMarkdown>{reading}</ReactMarkdown>
                     </div>
 
@@ -152,7 +138,7 @@ export default function DivinationResults() {
                                 onClick={handleRetry}
                                 className="mystical-button flex items-center justify-center mx-auto"
                             >
-                                <RotateCw className="h-4 w-4 mr-2" />
+                                <RotateCw className="h-4 w-4 mr-2"/>
                                 Try Again
                             </button>
                         </div>
@@ -166,7 +152,7 @@ export default function DivinationResults() {
                         onClick={handleReturnToPortal}
                         className="mystical-button flex items-center justify-center mx-auto"
                     >
-                        <Moon className="h-4 w-4 mr-2 opacity-60" />
+                        <Moon className="h-4 w-4 mr-2 opacity-60"/>
                         Return to Sacred Portal
                     </button>
                 </div>
