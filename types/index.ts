@@ -1,41 +1,41 @@
 // User input data types
 export interface DivinationFormData {
-  name: string
-  dateOfBirth: string
-  favoriteColor: string
-  favoriteNumber: string
-  relationshipStatus: string
+    name: string
+    dateOfBirth: string
+    favoriteColor: string
+    favoriteNumber: string
+    relationshipStatus: string
 }
 
 // Payment related types
 export interface PaymentResult {
-  success: boolean
-  message: string
-  amount?: string
-  transactionId?: string
-  connectionError?: boolean
+    success: boolean
+    message: string
+    amount?: string
+    transactionId?: string
+    connectionError?: boolean
 }
 
 export interface BlikPaymentParams {
-  code: string
-  amount: number
-  description: string
-  reference?: string
+    code: string
+    amount: number
+    description: string
+    reference?: string
 }
 
 // Divination related types
 export interface TarotCard {
-  id?: string
-  name: string
-  image: string
-  description: string
-  reversed?: boolean
+    id?: string
+    name: string
+    image: string
+    description: string
+    reversed?: boolean
 }
 
 export type TarotCardProps = Pick<TarotCard, "name" | "image" | "description" | "reversed"> & {
-  delay?: number
-  alwaysShowFront?: boolean
-  onCardClick?: () => void
+    delay?: number
+    alwaysShowFront?: boolean
+    onCardClick?: () => void
 }
 
 // Possible statuses of the divination process
@@ -49,12 +49,13 @@ export type DivinationStatus =
 
 // History related types
 export interface DivinationHistoryItem {
-  id: string
-  date: string // mapped from createdAt
-  userId: string
-  userInfo: DivinationFormData | null
-  status: DivinationStatus
-  statusComment: string | null
-  tarotCards: TarotCard[]
-  reading: string | null
+    id: string
+    date: string // mapped from createdAt
+    userId: string
+    userInfo: DivinationFormData | null
+    status: DivinationStatus
+    statusComment: string | null
+    tarotCards: TarotCard[]
+    reading: string | null
+    paymentState?: "PAYMENT_FAILED_TECHNICAL_ERROR" | "PAYMENT_FAILED_BUSINESS_ERROR"
 }

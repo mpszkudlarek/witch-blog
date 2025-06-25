@@ -11,40 +11,51 @@ interface Props {
     onSelectAction: (item: DivinationHistoryItem) => void
 }
 
-type FilterKey = "all" | "success" | "gpt" | "payment"
+type FilterKey = "all" | "success" | "gpt" | "technical" | "business"
 
 const filters: { key: FilterKey; label: string }[] = [
     {key: "all", label: "All"},
     {key: "success", label: "Success"},
     {key: "gpt", label: "GPT Error"},
-    {key: "payment", label: "Payment Error"},
+    {key: "technical", label: "Technical Error"},
+    {key: "business", label: "Business Error"},
 ]
 
-function getStatusLabel(status: string): { label: string; className: string } {
+function getStatusLabel(status: string, paymentState?: string): { label: string; className: string } {
     const base =
         "text-xs px-3 py-1 rounded-full backdrop-blur-sm border border-white/10 ring-1 ring-inset tracking-wide shadow-md shadow-black/30 transition-all duration-300"
 
-    switch (status) {
-        case "Finished":
-            return {
-                label: "✨ Success",
-                className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
-            }
-        case "FailedIntegrationWithChatGPT":
-            return {
-                label: "🧠 GPT Error",
-                className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
-            }
-        case "FinishedWithWrongPaymentStatus":
-            return {
-                label: "🪙 Payment Error",
-                className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
-            }
-        default:
-            return {
-                label: "🌫 Unknown",
-                className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
-            }
+    if (status === "Finished") {
+        return {
+            label: "✨ Success",
+            className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
+        }
+    }
+
+    if (status === "FailedIntegrationWithChatGPT") {
+        return {
+            label: "🧠 GPT Error",
+            className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
+        }
+    }
+
+    if (status === "FinishedWithWrongPaymentStatus" && paymentState === "PAYMENT_FAILED_BUSINESS_ERROR") {
+        return {
+            label: "💼 Business Error",
+            className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
+        }
+    }
+
+    if (status === "FinishedWithWrongPaymentStatus" && paymentState === "PAYMENT_FAILED_TECHNICAL_ERROR") {
+        return {
+            label: "🛠 Technical Error",
+            className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
+        }
+    }
+
+    return {
+        label: "👽 Unknown",
+        className: `${base} bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/80 ring-white/10`,
     }
 }
 
@@ -56,7 +67,12 @@ export default function HistoryListView({items, onSelectAction}: Props) {
         .filter((item) => {
             if (statusFilter === "success") return item.status === "Finished"
             if (statusFilter === "gpt") return item.status === "FailedIntegrationWithChatGPT"
-            if (statusFilter === "payment") return item.status === "FinishedWithWrongPaymentStatus"
+            if (statusFilter === "technical")
+                return item.status === "FinishedWithWrongPaymentStatus" &&
+                    item.paymentState === "PAYMENT_FAILED_TECHNICAL_ERROR"
+            if (statusFilter === "business")
+                return item.status === "FinishedWithWrongPaymentStatus" &&
+                    item.paymentState === "PAYMENT_FAILED_BUSINESS_ERROR"
             return true
         })
         .sort((a, b) =>
@@ -73,8 +89,7 @@ export default function HistoryListView({items, onSelectAction}: Props) {
                         <button
                             key={key}
                             onClick={() => setStatusFilter(key)}
-                            className={`px-4 py-1.5 text-sm font-medium rounded-full border backdrop-blur-md shadow-sm transition-all duration-200
-                                ${
+                            className={`px-4 py-1.5 text-sm font-medium rounded-full border backdrop-blur-md shadow-sm transition-all duration-200 ${
                                 statusFilter === key
                                     ? "bg-white/20 text-white border-white/30 scale-105"
                                     : "bg-white/5 text-white/50 border-white/10 hover:bg-white/10 hover:text-white"
@@ -95,7 +110,7 @@ export default function HistoryListView({items, onSelectAction}: Props) {
             </div>
 
             {filteredItems.map((item) => {
-                const {label, className} = getStatusLabel(item.status)
+                const {label, className} = getStatusLabel(item.status, item.paymentState)
 
                 return (
                     <div
@@ -148,14 +163,12 @@ export default function HistoryListView({items, onSelectAction}: Props) {
                         {item.reading && (
                             <div className="mt-1">
                                 <div
-                                    className="text-sm text-white/70 font-light leading-relaxed line-clamp-3 prose prose-invert max-w-none prose-p:my-0 prose-p:leading-snug prose-headings:hidden prose-strong:text-white"
-                                >
+                                    className="text-sm text-white/70 font-light leading-relaxed line-clamp-3 prose prose-invert max-w-none prose-p:my-0 prose-p:leading-snug prose-headings:hidden prose-strong:text-white">
                                     <ReactMarkdown>{item.reading.replace(/\\n/g, "\n")}</ReactMarkdown>
                                 </div>
                                 <div className="flex justify-end mt-4">
                                     <span
-                                        className="text-sm font-serif px-4 py-1.5 bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/90 rounded-full flex items-center gap-2 border border-white/10 hover:brightness-110 hover:scale-[1.02] transition"
-                                    >
+                                        className="text-sm font-serif px-4 py-1.5 bg-gradient-to-r from-slate-900/90 to-slate-800/90 text-white/90 rounded-full flex items-center gap-2 border border-white/10 hover:brightness-110 hover:scale-[1.02] transition">
                                         <Scroll className="h-4 w-4 opacity-70"/>
                                         View Full Reading
                                     </span>

@@ -1,21 +1,29 @@
-import {DivinationHistoryItem, TarotCard, DivinationFormData} from "@/types"
+import {DivinationHistoryItem, TarotCard} from "@/types"
 import {getCardIconFilename} from "@/lib/tarot-utils"
 import type {RawDivinationProcess} from "@/types/raw"
 
-
 export async function getDivinationHistory(userId: string): Promise<DivinationHistoryItem[]> {
-    const res = await fetch(`http://localhost:8080/orchestrator-service/process/${userId}`, {
+    const url = `http://localhost:8080/orchestrator-service/process/${userId}`
+    console.log(`[GET] Fetching divination history for userId: ${userId}`)
+    console.log(`→ URL: ${url}`)
+
+    const res = await fetch(url, {
         method: "GET",
         headers: {"Content-Type": "application/json"},
     })
 
+    console.log(`[RESPONSE] Status: ${res.status}`)
+
     if (!res.ok) {
+        const text = await res.text()
+        console.error("[ERROR] Failed to fetch history:", text)
         throw new Error("Failed to fetch history")
     }
 
     const rawData: RawDivinationProcess[] = await res.json()
+    console.log("[RESPONSE] Received raw data:", rawData)
 
-    return rawData
+    const filteredAndMapped = rawData
         .filter(p =>
             (p.status === "Finished" && (p.tarotCards?.length ?? 0) > 0) ||
             p.status === "FinishedWithWrongPaymentStatus" ||
@@ -27,6 +35,7 @@ export async function getDivinationHistory(userId: string): Promise<DivinationHi
             userId: p.userId,
             status: p.status as DivinationHistoryItem["status"],
             statusComment: p.statusComment,
+            paymentState: p.paymentState,
             userInfo: p.userInfo
                 ? {
                     name: p.userInfo.name ?? "",
@@ -45,4 +54,9 @@ export async function getDivinationHistory(userId: string): Promise<DivinationHi
             })),
             reading: p.divination,
         }))
+
+
+    console.log("[RESULT] Processed history items:", filteredAndMapped)
+
+    return filteredAndMapped
 }

@@ -13,6 +13,7 @@ export type RawUserInfo = {
 }
 
 export type RawDivinationProcess = {
+    paymentState: "PAYMENT_FAILED_TECHNICAL_ERROR" | "PAYMENT_FAILED_BUSINESS_ERROR";
     id: string
     createdAt: string
     divination: string | null
