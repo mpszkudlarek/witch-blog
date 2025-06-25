@@ -22,13 +22,8 @@ export default function LedgerView({
     password: string
     onExitAction: () => void
 }) {
-    const [fromDate, setFromDate] = useState(() => {
-        const date = new Date()
-        date.setDate(date.getDate() - 30)
-        return date.toISOString().split("T")[0]
-    })
-
-    const [toDate, setToDate] = useState(() => new Date().toISOString().split("T")[0])
+    const [fromDate, setFromDate] = useState<string>("")
+    const [toDate, setToDate] = useState<string>("")
     const [summary, setSummary] = useState<AdminSummary | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -55,6 +50,11 @@ export default function LedgerView({
     }, [password])
 
     const fetchFilteredSummary = async () => {
+        if (!fromDate || !toDate) {
+            setError("Please select both dates before filtering.")
+            return
+        }
+
         const start = Date.now()
         setIsLoading(true)
         setError(null)
