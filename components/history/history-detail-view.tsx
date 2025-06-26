@@ -7,6 +7,7 @@ import {formatDistanceToNow} from "@/lib/date-utils"
 import ReactMarkdown from "react-markdown"
 import {formatCardName} from "@/lib/tarot-utils"
 import {useRouter} from "next/navigation"
+import {useState} from "react"
 
 interface Props {
     item: DivinationHistoryItem
@@ -16,6 +17,54 @@ interface Props {
 export default function HistoryDetailView({item, onBackAction}: Props) {
     const router = useRouter()
     const shouldShowRetry = item.status === "FailedIntegrationWithChatGPT"
+    const [retryError, setRetryError] = useState(false)
+
+    const handleRetry = async () => {
+        console.log("[RETRY] Starting retry for processId:", item.id)
+        setRetryError(false)
+
+        try {
+            const url = `http://localhost:8080/divination-service/retry/${item.id}`
+            console.log("[RETRY] Sending POST to:", url)
+
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            console.log("[RETRY] Response status:", res.status)
+
+            if (!res.ok) {
+                const errorText = await res.text()
+                console.error("[RETRY] Retry failed with error:", errorText)
+                setRetryError(true)
+                return
+            }
+
+            const reading = await res.text()
+            console.log("[RETRY] Received new reading:", reading)
+
+            const rawCards = item.tarotCards.map((card) => ({
+                cardName: card.name,
+                description: card.description,
+                isReversed: card.reversed,
+            }))
+            console.log("[RETRY] Converted tarotCards to rawCards:", rawCards)
+
+            sessionStorage.setItem("divinationCards", JSON.stringify(rawCards))
+            sessionStorage.setItem("divinationResult", JSON.stringify(reading))
+            sessionStorage.setItem("divinationProcessId", item.id)
+            console.log("[RETRY] Stored new data in sessionStorage")
+
+            router.push("/divination")
+            console.log("[RETRY] Navigated to /divination")
+        } catch (err) {
+            console.error("[RETRY] Unexpected error during retry:", err)
+            setRetryError(true)
+        }
+    }
 
     return (
         <div className="space-y-6">
@@ -82,9 +131,14 @@ export default function HistoryDetailView({item, onBackAction}: Props) {
                 )}
 
                 {shouldShowRetry && (
-                    <div className="text-center pt-6">
+                    <div className="text-center pt-6 space-y-4">
+                        {retryError && (
+                            <div className="text-red-400 text-sm">
+                                The cosmic integration failed again. You may try once more.
+                            </div>
+                        )}
                         <button
-                            onClick={() => router.push("/")}
+                            onClick={handleRetry}
                             className="mystical-button flex items-center justify-center mx-auto"
                         >
                             <RotateCw className="h-4 w-4 mr-2 opacity-60"/>
