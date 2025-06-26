@@ -31,10 +31,19 @@
         @apply border-border;
     }
 
+    /*body {*/
+    /*    @apply bg-background text-foreground bg-slate-950;*/
+    /*    background-image: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.06) 0%, transparent 45%),*/
+    /*    radial-gradient(circle at 85% 85%, rgba(219, 39, 119, 0.06) 0%, transparent 45%);*/
+    /*}*/
+
     body {
         @apply bg-background text-foreground bg-slate-950;
         background-image: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.06) 0%, transparent 45%),
         radial-gradient(circle at 85% 85%, rgba(219, 39, 119, 0.06) 0%, transparent 45%);
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 }
 
