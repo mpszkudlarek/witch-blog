@@ -18,6 +18,7 @@ export default function DivinationResults() {
     const [reading, setReading] = useState<string>("")
     const [isFailure, setIsFailure] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [retryError, setRetryError] = useState(false)
     const [showReading, setShowReading] = useState(false)
     const [showLeaveConfirmation, setShowLeaveConfirmation] = useState(false)
     const [clickedCards, setClickedCards] = useState<boolean[]>([false, false, false])
@@ -69,10 +70,37 @@ export default function DivinationResults() {
         else setShowLeaveConfirmation(true)
     }
 
-    const handleRetry = () => {
-        sessionStorage.removeItem("divinationCards")
-        sessionStorage.removeItem("divinationResult")
-        router.push("/")
+    const handleRetry = async () => {
+        const processId = sessionStorage.getItem("divinationProcessId")
+
+        if (!processId) {
+            console.error("Missing process ID")
+            setRetryError(true)
+            return
+        }
+
+        try {
+            const res = await fetch(`http://localhost:8080/divination-service/retry/${processId}`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+            })
+
+            if (!res.ok) {
+                console.error(`Retry failed with status ${res.status}`)
+                setRetryError(true)
+                return
+            }
+
+            const newReading = await res.text()
+
+            setReading(newReading)
+            setIsFailure(false)
+            setRetryError(false)
+            sessionStorage.setItem("divinationResult", JSON.stringify(newReading))
+        } catch (err) {
+            console.error("Retry request failed:", err)
+            setRetryError(true)
+        }
     }
 
     if (isLoading) return <DivinationLoading/>
@@ -127,6 +155,11 @@ export default function DivinationResults() {
 
                     {isFailure && (
                         <div className="text-center pt-6 space-y-4">
+                            {retryError && (
+                                <div className="text-red-400 text-sm">
+                                    The aether trembled — retrying the ritual failed. Please try again.
+                                </div>
+                            )}
                             <button
                                 onClick={handleRetry}
                                 className="mystical-button flex items-center justify-center mx-auto"

@@ -32,6 +32,12 @@ export default function BlikPaymentForm() {
     const userId = searchParams.get("userId") || ""
     const processId = searchParams.get("processId") || ""
 
+    useEffect(() => {
+        if (processId) {
+            sessionStorage.setItem("divinationProcessId", processId)
+        }
+    }, [processId])
+
     const [divinationData, setDivinationData] = useState<DivinationFormData | null>(null)
     const [blikCode, setBlikCode] = useState("")
     const [isProcessing, setIsProcessing] = useState(false)
